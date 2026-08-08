@@ -18,6 +18,7 @@ data, rules, and presentation separate.
 - calculate ship, captain, upgrade, variable weapon, and faction-penalty costs
 - validate a fleet before exporting it as versioned JSON
 - responsive fleet-building UI suitable for GitHub Pages
+- project-supplied 2E faction, stat, action, command, and uniqueness iconography
 
 Admirals remain catalog-only. Rule-of-three, resources, format point limits, collection tracking,
 import, and the complete card catalog are future slices. See [docs/RULES_SCOPE.md](docs/RULES_SCOPE.md)
@@ -69,6 +70,7 @@ packages/schema + packages/data
 - `packages/data` owns canonical migrated records and provenance.
 - `packages/core` owns filtering, drag/drop placement, fleet mutation, cost calculation, and validation.
 - `src` renders the builder and calls the core API; it does not define game rules.
+- `public/icons/2e` contains normalized presentation assets supplied by the project owner.
 
 Saved fleet files currently use `formatVersion: 1`.
 
