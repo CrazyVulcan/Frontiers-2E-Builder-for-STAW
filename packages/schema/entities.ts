@@ -12,7 +12,7 @@ export type CardType =
 export type UpgradeType = Extract<CardType, "crew" | "tech" | "weapon" | "talent">;
 
 export type UniquenessRestriction =
-  | "list-unique"
+  | "fleet-unique"
   | "ship-unique"
   | "mirror-universe-unique";
 

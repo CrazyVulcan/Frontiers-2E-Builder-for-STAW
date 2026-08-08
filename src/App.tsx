@@ -155,6 +155,9 @@ type UpgradeFaceCard = CaptainCard | AdmiralCard | UpgradeCard;
 function getCardTypeIcon(card: UpgradeFaceCard): GameIconName | undefined {
   if (card.type === "captain") return "card-captain";
   if (card.type === "admiral") return "card-admiral";
+  if (card.type === "weapon") return "upgrade-weapon";
+  if (card.type === "tech") return "upgrade-tech";
+  if (card.type === "crew") return "upgrade-crew";
   if (card.type === "talent") return "upgrade-talent";
   return undefined;
 }
@@ -171,7 +174,7 @@ function UpgradeCardFace({
   const faction = card.factions[0];
   const typeIcon = getCardTypeIcon(card);
   const restrictions = card.uniquenessRestrictions
-    ?? (card.unique ? ["list-unique" as const] : []);
+    ?? (card.unique ? ["fleet-unique" as const] : []);
   const talentSlots = card.type === "captain" || card.type === "admiral"
     ? card.talentSlots
     : card.grantsTalentSlots ?? 0;
@@ -191,7 +194,7 @@ function UpgradeCardFace({
           <div className="upgradeRestrictionRail" aria-label="Card restrictions">
             {restrictions.map((restriction) => (
               <span key={restriction} aria-label={titleCase(restriction)}>
-                {restriction === "list-unique" && <GameIcon name="unique" />}
+                {restriction === "fleet-unique" && <GameIcon name="unique" />}
                 {restriction === "ship-unique" && <GameIcon name="one-per" />}
                 {restriction === "mirror-universe-unique" && <b>MU</b>}
               </span>
@@ -231,11 +234,9 @@ function UpgradeCardFace({
         </div>
 
         <div className="upgradeTypeSeal" aria-label={titleCase(card.type)}>
-          {card.type === "weapon"
-            ? <span className="stawWeaponGlyph" aria-hidden="true">aaa</span>
-            : typeIcon
-              ? <GameIcon name={typeIcon} />
-              : <span>{card.type.slice(0, 1).toUpperCase()}</span>}
+          {typeIcon
+            ? <GameIcon name={typeIcon} />
+            : <span>{card.type.slice(0, 1).toUpperCase()}</span>}
         </div>
         {talentSlots > 0 && (
           <div className="upgradeTalentSeal" aria-label={`${talentSlots} talent slot${talentSlots === 1 ? "" : "s"}`}>
@@ -500,7 +501,7 @@ function FleetShipBay({
               {equipped.map(({ upgrade, upgradeIndex }) => upgrade && (
                 <LoadoutCardRow
                   key={`${upgrade.id}-${upgradeIndex}`}
-                  icon={type === "talent" ? "upgrade-talent" : type === "weapon" ? "stat-attack" : undefined}
+                  icon={getCardTypeIcon(upgrade)}
                   fallbackLabel={type.slice(0, 1).toUpperCase()}
                   name={upgrade.name}
                   meta={`${titleCase(upgrade.factions[0])}${calculateCardCostForShip(ship, upgrade).factionPenalty ? " · +1 faction" : ""}`}
