@@ -8,6 +8,9 @@ data, rules, and presentation separate.
 
 - browse and search all 36 logical records in the 2017 Starter fixture
 - filter by faction and card type
+- drag Ship cards from the left library into the fleet workspace
+- drag Captain and Upgrade cards directly onto a ship
+- use click-to-add and click-to-equip controls on touch and keyboard-driven devices
 - add and remove ship cards
 - assign one captain per ship
 - equip upgrades into ship and captain-provided talent slots
@@ -64,7 +67,7 @@ packages/schema + packages/data
 
 - `packages/schema` owns persistent domain shapes and IDs.
 - `packages/data` owns canonical migrated records and provenance.
-- `packages/core` owns filtering, fleet mutation, cost calculation, and validation.
+- `packages/core` owns filtering, drag/drop placement, fleet mutation, cost calculation, and validation.
 - `src` renders the builder and calls the core API; it does not define game rules.
 
 Saved fleet files currently use `formatVersion: 1`.

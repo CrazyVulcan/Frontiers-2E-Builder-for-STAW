@@ -16,6 +16,8 @@ interpretations. It should be updated with every rules-engine slice.
   base SP cost. The fixture uses this for Torpedo Fusillade.
 - Missing catalog references, slot overflow, duplicate instance IDs, and repeated unique records are
   reported by `validateFleet`.
+- Drag-and-drop and click placement both route through `placeCardInFleet`; target compatibility and
+  legality are resolved in core rather than React event handlers.
 
 Rules reference:
 

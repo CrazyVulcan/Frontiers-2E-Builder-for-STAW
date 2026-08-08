@@ -49,6 +49,16 @@ export interface EquipCheck {
   reason?: string;
 }
 
+export type FleetCardPlacementTarget =
+  | { kind: "fleet"; newInstanceId: string }
+  | { kind: "ship"; shipInstanceId: string };
+
+export interface FleetCardPlacementResult {
+  fleet: FleetFileV1;
+  placed: boolean;
+  message: string;
+}
+
 const upgradeTypes: UpgradeType[] = ["crew", "tech", "weapon", "talent"];
 
 export function createFleetCardIndex(cards: GameCard[]): FleetCardIndex {
@@ -309,6 +319,79 @@ export function canEquipUpgrade(
   return used[upgrade.type] < capacity[upgrade.type]
     ? { allowed: true }
     : { allowed: false, reason: `No open ${upgrade.type} slot on ${ship.name}.` };
+}
+
+export function placeCardInFleet(
+  fleet: FleetFileV1,
+  cardId: string,
+  target: FleetCardPlacementTarget,
+  index: FleetCardIndex,
+): FleetCardPlacementResult {
+  const card = index.cardsById.get(cardId);
+  if (!card) {
+    return { fleet, placed: false, message: "That card is not in the active catalog." };
+  }
+
+  if (target.kind === "fleet") {
+    if (card.type !== "ship") {
+      return {
+        fleet,
+        placed: false,
+        message: "Drop captains and upgrades onto a ship in the fleet.",
+      };
+    }
+
+    const check = canAddShip(fleet, card);
+    if (!check.allowed) {
+      return { fleet, placed: false, message: check.reason ?? "That ship cannot be added." };
+    }
+
+    return {
+      fleet: addShip(fleet, card, target.newInstanceId),
+      placed: true,
+      message: `${card.name} added to the fleet.`,
+    };
+  }
+
+  if (card.type === "ship") {
+    return {
+      fleet,
+      placed: false,
+      message: "Drop ship cards onto the open fleet workspace.",
+    };
+  }
+
+  if (card.type === "captain") {
+    const check = canAssignCaptain(fleet, target.shipInstanceId, card);
+    if (!check.allowed) {
+      return { fleet, placed: false, message: check.reason ?? "That captain cannot be assigned." };
+    }
+
+    return {
+      fleet: assignCaptain(fleet, target.shipInstanceId, card.id),
+      placed: true,
+      message: `${card.name} assigned as captain.`,
+    };
+  }
+
+  if (card.type === "admiral") {
+    return {
+      fleet,
+      placed: false,
+      message: "Admiral assignment belongs to the next rules slice.",
+    };
+  }
+
+  const check = canEquipUpgrade(fleet, target.shipInstanceId, card, index);
+  if (!check.allowed) {
+    return { fleet, placed: false, message: check.reason ?? "That upgrade cannot be equipped." };
+  }
+
+  return {
+    fleet: equipUpgrade(fleet, target.shipInstanceId, card.id),
+    placed: true,
+    message: `${card.name} equipped.`,
+  };
 }
 
 export function validateFleet(fleet: FleetFileV1, index: FleetCardIndex): FleetRuleIssue[] {
