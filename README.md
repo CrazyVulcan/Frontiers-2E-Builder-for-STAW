@@ -19,6 +19,8 @@ data, rules, and presentation separate.
 - validate a fleet before exporting it as versioned JSON
 - responsive fleet-building UI suitable for GitHub Pages
 - project-supplied 2E faction, stat, action, command, and uniqueness iconography
+- portrait 2E-style Captain and Upgrade card faces with readable rules panels
+- hover and keyboard-focus previews for cards equipped on a ship
 
 Admirals remain catalog-only. Rule-of-three, resources, format point limits, collection tracking,
 import, and the complete card catalog are future slices. See [docs/RULES_SCOPE.md](docs/RULES_SCOPE.md)

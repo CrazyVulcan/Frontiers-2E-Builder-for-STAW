@@ -27,10 +27,13 @@ import {
   validateFleet,
 } from "../packages/core/fleet";
 import type {
+  CaptainCard,
   FleetFileV1,
   FleetShipV1,
   GameCard,
+  AdmiralCard,
   ShipCard,
+  UpgradeCard,
   UpgradeType,
 } from "../packages/schema/entities";
 import {
@@ -147,6 +150,80 @@ function getQuickAction(
   return { enabled: check.allowed, label: check.allowed ? "Equip card" : blockedLabel };
 }
 
+type UpgradeFaceCard = CaptainCard | AdmiralCard | UpgradeCard;
+
+function getCardTypeIcon(card: UpgradeFaceCard): GameIconName | undefined {
+  if (card.type === "captain") return "card-captain";
+  if (card.type === "admiral") return "card-admiral";
+  if (card.type === "talent") return "upgrade-talent";
+  if (card.type === "weapon") return "stat-attack";
+  return undefined;
+}
+
+function UpgradeCardFace({
+  card,
+  displayCost,
+  variant = "library",
+}: {
+  card: UpgradeFaceCard;
+  displayCost: number | string;
+  variant?: "library" | "preview";
+}) {
+  const faction = card.factions[0];
+  const typeIcon = getCardTypeIcon(card);
+  const commandValue = card.type === "captain" || card.type === "admiral"
+    ? card.skill
+    : card.type === "weapon" && card.attack
+      ? card.attack
+      : undefined;
+  const commandIcon = card.type === "captain" || card.type === "admiral"
+    ? getCardTypeIcon(card)
+    : "stat-attack";
+  const rulesText = card.rulesSummary
+    ?? "Card text has not yet been transcribed into the clean-room fixture.";
+
+  return (
+    <div className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type}`}>
+      <div className="upgradeCardArt"><CardArt card={card} /></div>
+      <div className="upgradeCardFrame">
+        <div className="upgradeNameBand">
+          <span>{titleCase(card.type)} · {card.legacyId}</span>
+          <h3>{card.name}</h3>
+          {card.unique && <GameIcon name="unique" className="upgradeUniqueBadge" label="Unique" />}
+        </div>
+
+        {commandValue !== undefined && commandIcon && (
+          <div className="upgradeCommandBadge" aria-label={`${card.type === "weapon" ? "Attack" : "Skill"} ${commandValue}`}>
+            <GameIcon name={commandIcon} />
+            <strong>{commandValue}</strong>
+          </div>
+        )}
+
+        <div className="upgradeRulesPanel">
+          <strong>{card.type === "captain" || card.type === "admiral" ? "COMMAND ABILITY" : titleCase(card.type)}</strong>
+          <p>{rulesText}</p>
+          {card.type === "weapon" && card.range && <small>RANGE {card.range}</small>}
+        </div>
+
+        <div className="upgradeTypeSeal" aria-label={titleCase(card.type)}>
+          {typeIcon ? <GameIcon name={typeIcon} /> : <span>{card.type.slice(0, 1).toUpperCase()}</span>}
+        </div>
+        {(card.type === "captain" || card.type === "admiral") && card.talentSlots > 0 && (
+          <div className="upgradeTalentSeal" aria-label={`${card.talentSlots} talent slot${card.talentSlots === 1 ? "" : "s"}`}>
+            <GameIcon name="upgrade-talent" />
+            {card.talentSlots > 1 && <b>{card.talentSlots}</b>}
+          </div>
+        )}
+        <div className="upgradeFactionCost">
+          <GameIcon name={factionIconName(faction)} label={titleCase(faction)} />
+          <strong>{displayCost}</strong>
+          <small>SP</small>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LibraryCard({
   card,
   fleet,
@@ -173,15 +250,16 @@ function LibraryCard({
 
   return (
     <article
-      className={`libraryCard faction-${faction}`}
+      className={`libraryCard faction-${faction} ${card.type === "ship" ? "shipLibraryCard" : `upgradeLibraryCard card-${card.type}`}`}
       draggable
       onDragStart={handleDragStart}
       onDragEnd={() => onDragState(null)}
     >
       <div className="dragHandle"><span>⠿</span> DRAG CARD</div>
-      <div className="libraryCardArt"><CardArt card={card} /></div>
-
-      <div className="libraryCardBody">
+      {card.type === "ship" ? (
+        <>
+          <div className="libraryCardArt"><CardArt card={card} /></div>
+          <div className="libraryCardBody">
         <div className="factionSeal" aria-label={titleCase(faction)}>
           <GameIcon name={factionIconName(faction)} />
         </div>
@@ -206,8 +284,7 @@ function LibraryCard({
           )}
         </div>
 
-        {card.type === "ship" && (
-          <div className="cardIconRails">
+        <div className="cardIconRails">
             <div className="cardActionRail" aria-label="Ship actions">
               {card.actions.map((action) => {
                 const iconName = actionIconName(action);
@@ -223,8 +300,7 @@ function LibraryCard({
                 </span>
               ))}
             </div>
-          </div>
-        )}
+        </div>
 
         <button
           className="cardQuickAction"
@@ -233,7 +309,23 @@ function LibraryCard({
         >
           {quickAction.label}
         </button>
-      </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <UpgradeCardFace
+            card={card}
+            displayCost={isVariableCost ? "PWV" : (card.cost ?? "?")}
+          />
+          <button
+            className="cardQuickAction upgradeQuickAction"
+            disabled={!quickAction.enabled}
+            onClick={() => onPlace(card.id, selectedShipId ?? undefined)}
+          >
+            {quickAction.label}
+          </button>
+        </>
+      )}
     </article>
   );
 }
@@ -244,6 +336,7 @@ function LoadoutCardRow({
   name,
   meta,
   cost,
+  previewCard,
   onRemove,
 }: {
   icon?: GameIconName;
@@ -251,16 +344,24 @@ function LoadoutCardRow({
   name: string;
   meta: string;
   cost: number;
+  previewCard: CaptainCard | UpgradeCard;
   onRemove: () => void;
 }) {
   return (
-    <div className="loadoutCardRow">
+    <div
+      className="loadoutCardRow"
+      tabIndex={0}
+      aria-label={`${name}, ${meta}, ${cost} SP. Hover or focus to preview card.`}
+    >
       <span className="loadoutIcon">
         {icon ? <GameIcon name={icon} /> : fallbackLabel}
       </span>
       <span><strong>{name}</strong><small>{meta}</small></span>
       <b>{cost} SP</b>
       <button aria-label={`Remove ${name}`} onClick={onRemove}>×</button>
+      <div className="equippedCardPreview" aria-hidden="true">
+        <UpgradeCardFace card={previewCard} displayCost={cost} variant="preview" />
+      </div>
     </div>
   );
 }
@@ -347,6 +448,7 @@ function FleetShipBay({
             name={captain.name}
             meta={`Skill ${captain.skill} · ${titleCase(captain.factions[0])}`}
             cost={calculateCardCostForShip(ship, captain).total}
+            previewCard={captain}
             onRemove={() => onChange(assignCaptain(fleet, entry.instanceId, undefined))}
           />
         ) : (
@@ -374,6 +476,7 @@ function FleetShipBay({
                   name={upgrade.name}
                   meta={`${titleCase(upgrade.factions[0])}${calculateCardCostForShip(ship, upgrade).factionPenalty ? " · +1 faction" : ""}`}
                   cost={calculateCardCostForShip(ship, upgrade).total}
+                  previewCard={upgrade}
                   onRemove={() => onChange(removeUpgrade(fleet, entry.instanceId, upgradeIndex))}
                 />
               ))}
