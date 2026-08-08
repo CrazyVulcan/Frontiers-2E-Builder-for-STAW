@@ -56,6 +56,12 @@ const typeFilters: CatalogTypeFilter[] = [
 ];
 const factionFilters: CatalogFactionFilter[] = ["all", "federation", "klingon"];
 const upgradeTypes: UpgradeType[] = ["crew", "tech", "weapon", "talent"];
+const upgradeTypeIcons: Record<UpgradeType, GameIconName> = {
+  crew: "upgrade-crew",
+  tech: "upgrade-tech",
+  weapon: "upgrade-weapon",
+  talent: "upgrade-talent",
+};
 const fleetCardIndex = createFleetCardIndex(starter2017Cards);
 
 function titleCase(value: string) {
@@ -155,10 +161,9 @@ type UpgradeFaceCard = CaptainCard | AdmiralCard | UpgradeCard;
 function getCardTypeIcon(card: UpgradeFaceCard): GameIconName | undefined {
   if (card.type === "captain") return "card-captain";
   if (card.type === "admiral") return "card-admiral";
-  if (card.type === "weapon") return "upgrade-weapon";
-  if (card.type === "tech") return "upgrade-tech";
-  if (card.type === "crew") return "upgrade-crew";
-  if (card.type === "talent") return "upgrade-talent";
+  if (card.type === "weapon" || card.type === "tech" || card.type === "crew" || card.type === "talent") {
+    return upgradeTypeIcons[card.type];
+  }
   return undefined;
 }
 
@@ -256,6 +261,62 @@ function UpgradeCardFace({
   );
 }
 
+function ShipCardFace({
+  card,
+  displayCost,
+  variant = "library",
+}: {
+  card: ShipCard;
+  displayCost: number | string;
+  variant?: "library" | "fleet";
+}) {
+  const faction = card.factions[0];
+
+  return (
+    <div className={`shipCardFace shipCardFace-${variant} faction-${faction}`} data-legacy-id={card.legacyId}>
+      <div className="libraryCardArt"><CardArt card={card} /></div>
+      <div className="libraryCardBody">
+        <div className="factionSeal" aria-label={titleCase(faction)}>
+          <GameIcon name={factionIconName(faction)} />
+        </div>
+        <div className="libraryCardHeading">
+          <h3>{card.name}</h3>
+          <small>{card.className}</small>
+          {card.unique && <GameIcon name="unique" className="uniqueBadge" label="Unique" />}
+        </div>
+        <div className="spBadge">
+          <strong>{displayCost}</strong>
+          <span>SP</span>
+        </div>
+
+        <LibraryStats card={card} />
+
+        <div className="cardRulesPanel">
+          {card.rulesSummary ?? `${card.generic ? "Generic" : "Unique"} ${card.className} ship card.`}
+        </div>
+
+        <div className="cardIconRails">
+          <div className="cardActionRail" aria-label="Ship actions">
+            {card.actions.map((action) => {
+              const iconName = actionIconName(action);
+              return iconName
+                ? <GameIcon key={action} name={iconName} label={titleCase(action)} />
+                : <span key={action}>{action.split("-").map((part) => part[0]).join("").toUpperCase()}</span>;
+            })}
+          </div>
+          <div className="cardSlotRail" aria-label="Upgrade slots">
+            {card.upgradeSlots.map((slot, slotIndex) => (
+              <span key={`${slot}-${slotIndex}`}>
+                {slot === "talent" ? <GameIcon name="upgrade-talent" label="Talent" /> : slot.slice(0, 1).toUpperCase()}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LibraryCard({
   card,
   fleet,
@@ -290,58 +351,14 @@ function LibraryCard({
       <div className="dragHandle"><span>⠿</span> DRAG CARD</div>
       {card.type === "ship" ? (
         <>
-          <div className="libraryCardArt"><CardArt card={card} /></div>
-          <div className="libraryCardBody">
-        <div className="factionSeal" aria-label={titleCase(faction)}>
-          <GameIcon name={factionIconName(faction)} />
-        </div>
-        <div className="libraryCardHeading">
-          <span>{titleCase(card.type)} · {card.legacyId}</span>
-          <h3>{card.name}</h3>
-          {card.type === "ship" && <small>{card.className}</small>}
-          {card.unique && <GameIcon name="unique" className="uniqueBadge" label="Unique" />}
-        </div>
-        <div className="spBadge">
-          <strong>{isVariableCost ? "PWV" : (card.cost ?? "?")}</strong>
-          <span>{isVariableCost ? "COST" : "SP"}</span>
-        </div>
-
-        <LibraryStats card={card} />
-
-        <div className="cardRulesPanel">
-          {card.rulesSummary ?? (
-            card.type === "ship"
-              ? `${card.generic ? "Generic" : "Unique"} ${card.className} ship card.`
-              : "Card text has not yet been transcribed into the clean-room fixture."
-          )}
-        </div>
-
-        <div className="cardIconRails">
-            <div className="cardActionRail" aria-label="Ship actions">
-              {card.actions.map((action) => {
-                const iconName = actionIconName(action);
-                return iconName
-                  ? <GameIcon key={action} name={iconName} label={titleCase(action)} />
-                  : <span key={action}>{action.split("-").map((part) => part[0]).join("").toUpperCase()}</span>;
-              })}
-            </div>
-            <div className="cardSlotRail" aria-label="Upgrade slots">
-              {card.upgradeSlots.map((slot, slotIndex) => (
-                <span key={`${slot}-${slotIndex}`}>
-                  {slot === "talent" ? <GameIcon name="upgrade-talent" label="Talent" /> : slot.slice(0, 1).toUpperCase()}
-                </span>
-              ))}
-            </div>
-        </div>
-
-        <button
-          className="cardQuickAction"
-          disabled={!quickAction.enabled}
-          onClick={() => onPlace(card.id, card.type === "ship" ? undefined : selectedShipId ?? undefined)}
-        >
-          {quickAction.label}
-        </button>
-          </div>
+          <ShipCardFace card={card} displayCost={card.cost ?? "?"} />
+          <button
+            className="cardQuickAction shipQuickAction"
+            disabled={!quickAction.enabled}
+            onClick={() => onPlace(card.id)}
+          >
+            {quickAction.label}
+          </button>
         </>
       ) : (
         <>
@@ -362,38 +379,53 @@ function LibraryCard({
   );
 }
 
-function LoadoutCardRow({
-  icon,
-  fallbackLabel,
-  name,
-  meta,
+function FleetTableCard({
+  card,
   cost,
-  previewCard,
   onRemove,
 }: {
-  icon?: GameIconName;
-  fallbackLabel: string;
-  name: string;
-  meta: string;
+  card: CaptainCard | AdmiralCard | UpgradeCard;
   cost: number;
-  previewCard: CaptainCard | UpgradeCard;
   onRemove: () => void;
 }) {
   return (
     <div
-      className="loadoutCardRow"
+      className={`fleetTableCard fleetTableCard-${card.type}`}
       tabIndex={0}
-      aria-label={`${name}, ${meta}, ${cost} SP. Hover or focus to preview card.`}
+      aria-label={`${card.name}, ${titleCase(card.type)}, ${cost} SP. Hover or focus to enlarge card.`}
     >
-      <span className="loadoutIcon">
-        {icon ? <GameIcon name={icon} /> : fallbackLabel}
-      </span>
-      <span><strong>{name}</strong><small>{meta}</small></span>
-      <b>{cost} SP</b>
-      <button aria-label={`Remove ${name}`} onClick={onRemove}>×</button>
-      <div className="equippedCardPreview" aria-hidden="true">
-        <UpgradeCardFace card={previewCard} displayCost={cost} variant="preview" />
+      <UpgradeCardFace card={card} displayCost={cost} variant="preview" />
+      <div className="fleetTableCardMeta">
+        <span>{titleCase(card.type)}</span>
+        <button
+          aria-label={`Remove ${card.name}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onRemove();
+          }}
+        >Remove</button>
       </div>
+    </div>
+  );
+}
+
+function SlotStatus({
+  icon,
+  label,
+  used,
+  capacity,
+  locked = false,
+}: {
+  icon: GameIconName;
+  label: string;
+  used: number;
+  capacity: number;
+  locked?: boolean;
+}) {
+  return (
+    <div className={`slotStatus ${locked ? "locked" : ""}`}>
+      <GameIcon name={icon} />
+      <span><small>{label}</small><strong>{locked ? "COMING LATER" : `${used} / ${capacity}`}</strong></span>
     </div>
   );
 }
@@ -427,6 +459,14 @@ function FleetShipBay({
     { formatVersion: 1, name: fleet.name, ships: [entry] },
     fleetCardIndex,
   );
+  const upgradeOrder: Record<UpgradeType, number> = { talent: 0, tech: 1, weapon: 2, crew: 3 };
+  const equippedCards = entry.upgradeIds
+    .map((upgradeId, upgradeIndex) => ({
+      upgrade: fleetCardIndex.upgradesById.get(upgradeId),
+      upgradeIndex,
+    }))
+    .filter((item): item is { upgrade: UpgradeCard; upgradeIndex: number } => Boolean(item.upgrade))
+    .sort((first, second) => upgradeOrder[first.upgrade.type] - upgradeOrder[second.upgrade.type]);
 
   function handleDrop(event: DragEvent<HTMLElement>) {
     event.preventDefault();
@@ -452,81 +492,72 @@ function FleetShipBay({
       }}
       onDrop={handleDrop}
     >
-      <div className="shipBayArt"><CardArt card={ship} /></div>
-      <div className="shipBayHeader">
-        <span className="shipFactionMark"><GameIcon name={factionIconName(ship.factions[0])} /></span>
-        <div><small>{ship.className}</small><h3>{ship.name}</h3></div>
-        <div className="shipBayCost"><strong>{cost.total}</strong><span>SP</span></div>
-      </div>
+      <header className="formationHeader">
+        <span className="formationFaction"><GameIcon name={factionIconName(ship.factions[0])} /></span>
+        <div className="formationIdentity">
+          <small>STARSHIP GROUP</small>
+          <h3>{ship.name}</h3>
+          <span>{ship.className}</span>
+        </div>
+        <div className="formationCost"><strong>{cost.total}</strong><span>GROUP SP</span></div>
+        <button
+          className="removeShip"
+          onClick={(event) => {
+            event.stopPropagation();
+            onChange(removeShip(fleet, entry.instanceId));
+          }}
+        >Remove ship</button>
+      </header>
 
-      <div className="shipBayStats">
-        <span className="statAttack"><GameIcon name="stat-attack" /><b>{ship.attack}</b><small>ATTACK</small></span>
-        <span className="statAgility"><GameIcon name="stat-agility" /><b>{ship.agility}</b><small>AGILITY</small></span>
-        <span className="statHull"><GameIcon name="stat-hull" /><b>{ship.hull}</b><small>HULL</small></span>
-        <span className="statShield"><GameIcon name="stat-shield" /><b>{ship.shields}</b><small>SHIELDS</small></span>
+      <div className="equipmentManifest" aria-label={`Equipment capacity for ${ship.name}`}>
+        <div className="manifestIntro">
+          <span>{selected ? "ACTIVE SHIP" : "EQUIPMENT MANIFEST"}</span>
+          <small>{selected ? "Library cards equip here" : "Select this group or drop a card anywhere inside"}</small>
+        </div>
+        <div className="slotStatusRail">
+          <SlotStatus icon="card-captain" label="Captain" used={captain ? 1 : 0} capacity={1} />
+          <SlotStatus icon="card-admiral" label="Admiral" used={0} capacity={0} locked />
+          {upgradeTypes
+            .filter((upgradeType) => capacity[upgradeType] > 0 || used[upgradeType] > 0)
+            .sort((first, second) => upgradeOrder[first] - upgradeOrder[second])
+            .map((upgradeType) => (
+              <SlotStatus
+                key={upgradeType}
+                icon={upgradeTypeIcons[upgradeType]}
+                label={titleCase(upgradeType)}
+                used={used[upgradeType]}
+                capacity={capacity[upgradeType]}
+              />
+            ))}
+        </div>
       </div>
 
       <div className="shipBayDropPrompt">
-        <span>{dragActive ? "RELEASE TO ASSIGN" : "DROP CAPTAIN OR UPGRADE HERE"}</span>
-        <small>{selected ? "Selected for click-to-equip" : "Click to select this ship"}</small>
+        <span>{dragActive ? "RELEASE TO ASSIGN" : "DROP CAPTAIN, TALENT, TECH, WEAPON, OR CREW"}</span>
+        <small>{selected ? "Selected for click-to-equip" : "Click anywhere in this group to select"}</small>
       </div>
 
-      <div className="loadoutSlots">
-        <div className="slotHeader"><span>COMMAND</span><b>{captain ? "1 / 1" : "0 / 1"}</b></div>
-        {captain ? (
-          <LoadoutCardRow
-            icon="card-captain"
-            fallbackLabel="C"
-            name={captain.name}
-            meta={`Skill ${captain.skill} · ${titleCase(captain.factions[0])}`}
+      <div className="fleetCardTable" aria-label={`Cards assigned to ${ship.name}`}>
+        <div className="fleetTableCard fleetTableShipCard" tabIndex={0} aria-label={`${ship.name} ship card. Hover or focus to enlarge card.`}>
+          <ShipCardFace card={ship} displayCost={ship.cost ?? "?"} variant="fleet" />
+          <div className="fleetTableCardMeta"><span>Ship</span><b>Base {ship.cost ?? "?"} SP</b></div>
+        </div>
+        {captain && (
+          <FleetTableCard
+            card={captain}
             cost={calculateCardCostForShip(ship, captain).total}
-            previewCard={captain}
             onRemove={() => onChange(assignCaptain(fleet, entry.instanceId, undefined))}
           />
-        ) : (
-          <div className="emptySlot">Drop a Captain card</div>
         )}
-
-        {upgradeTypes.filter((type) => capacity[type] > 0 || used[type] > 0).map((type) => {
-          const equipped = entry.upgradeIds
-            .map((upgradeId, upgradeIndex) => ({
-              upgrade: fleetCardIndex.upgradesById.get(upgradeId),
-              upgradeIndex,
-            }))
-            .filter(({ upgrade }) => upgrade?.type === type);
-
-          return (
-            <div className="slotGroup" key={type}>
-              <div className="slotHeader">
-                <span>{titleCase(type)}</span><b>{used[type]} / {capacity[type]}</b>
-              </div>
-              {equipped.map(({ upgrade, upgradeIndex }) => upgrade && (
-                <LoadoutCardRow
-                  key={`${upgrade.id}-${upgradeIndex}`}
-                  icon={getCardTypeIcon(upgrade)}
-                  fallbackLabel={type.slice(0, 1).toUpperCase()}
-                  name={upgrade.name}
-                  meta={`${titleCase(upgrade.factions[0])}${calculateCardCostForShip(ship, upgrade).factionPenalty ? " · +1 faction" : ""}`}
-                  cost={calculateCardCostForShip(ship, upgrade).total}
-                  previewCard={upgrade}
-                  onRemove={() => onChange(removeUpgrade(fleet, entry.instanceId, upgradeIndex))}
-                />
-              ))}
-              {used[type] < capacity[type] && (
-                <div className="emptySlot">{capacity[type] - used[type]} open {type} slot{capacity[type] - used[type] === 1 ? "" : "s"}</div>
-              )}
-            </div>
-          );
-        })}
+        {equippedCards.map(({ upgrade, upgradeIndex }) => (
+          <FleetTableCard
+            key={`${upgrade.id}-${upgradeIndex}`}
+            card={upgrade}
+            cost={calculateCardCostForShip(ship, upgrade).total}
+            onRemove={() => onChange(removeUpgrade(fleet, entry.instanceId, upgradeIndex))}
+          />
+        ))}
       </div>
-
-      <button
-        className="removeShip"
-        onClick={(event) => {
-          event.stopPropagation();
-          onChange(removeShip(fleet, entry.instanceId));
-        }}
-      >Remove ship</button>
     </article>
   );
 }
