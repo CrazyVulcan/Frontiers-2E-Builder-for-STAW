@@ -17,6 +17,7 @@ import {
   createFleetCardIndex,
   equipUpgrade,
   getUpgradeSlotCapacity,
+  placeCardInFleet,
   removeUpgrade,
   validateFleet,
 } from "./fleet";
@@ -135,5 +136,59 @@ describe("fleet core", () => {
 
     expect(codes).toContain("unique-card-repeated");
     expect(codes).toContain("upgrade-slot-overflow");
+  });
+
+  it("routes drag-and-drop placement through the core rules engine", () => {
+    const enterprise = cardByLegacyId(starter2017Ships, "S274");
+    const picard = cardByLegacyId(starter2017Captains, "Cap818");
+    const makeItSo = cardByLegacyId(starter2017Upgrades, "E175");
+    let fleet = createEmptyFleet();
+
+    const shipDrop = placeCardInFleet(
+      fleet,
+      enterprise.id,
+      { kind: "fleet", newInstanceId: "enterprise" },
+      index,
+    );
+    expect(shipDrop.placed).toBe(true);
+    fleet = shipDrop.fleet;
+
+    const captainDrop = placeCardInFleet(
+      fleet,
+      picard.id,
+      { kind: "ship", shipInstanceId: "enterprise" },
+      index,
+    );
+    expect(captainDrop.placed).toBe(true);
+    fleet = captainDrop.fleet;
+
+    const upgradeDrop = placeCardInFleet(
+      fleet,
+      makeItSo.id,
+      { kind: "ship", shipInstanceId: "enterprise" },
+      index,
+    );
+
+    expect(upgradeDrop.placed).toBe(true);
+    expect(upgradeDrop.fleet.ships[0]).toMatchObject({
+      captainId: picard.id,
+      upgradeIds: [makeItSo.id],
+    });
+  });
+
+  it("rejects card drops on the wrong target without mutating the fleet", () => {
+    const picard = cardByLegacyId(starter2017Captains, "Cap818");
+    const fleet = createEmptyFleet();
+
+    const result = placeCardInFleet(
+      fleet,
+      picard.id,
+      { kind: "fleet", newInstanceId: "not-used" },
+      index,
+    );
+
+    expect(result.placed).toBe(false);
+    expect(result.fleet).toBe(fleet);
+    expect(result.message).toContain("onto a ship");
   });
 });
