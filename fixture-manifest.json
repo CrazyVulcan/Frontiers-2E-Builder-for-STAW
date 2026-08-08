@@ -1,0 +1,26 @@
+{
+  "project": "Frontiers - 2E Builder for STAW",
+  "version": "0.3.0",
+  "fixture": {
+    "name": "2017 Starter Set",
+    "legacySetId": "2017core",
+    "factions": [
+      "federation",
+      "klingon"
+    ],
+    "logicalRecords": {
+      "ships": 8,
+      "captains": 7,
+      "admirals": 1,
+      "upgrades": 20,
+      "total": 36
+    },
+    "physicalFleetBuilderCards": {
+      "ships": 8,
+      "captains": 5,
+      "admirals": 1,
+      "upgrades": 20,
+      "total": 34
+    }
+  }
+}

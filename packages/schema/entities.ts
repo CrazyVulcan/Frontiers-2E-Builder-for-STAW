@@ -1,0 +1,99 @@
+export type FactionId = "federation" | "klingon";
+
+export type CardType =
+  | "ship"
+  | "captain"
+  | "admiral"
+  | "crew"
+  | "tech"
+  | "weapon"
+  | "talent";
+
+export type UpgradeType = Extract<CardType, "crew" | "tech" | "weapon" | "talent">;
+
+export type ActionId =
+  | "evade"
+  | "target-lock"
+  | "scan"
+  | "battlestations"
+  | "cloak"
+  | "sensor-echo";
+
+export interface BaseCard {
+  id: string;
+  legacyId: string;
+  legacySetId: "2017core";
+  type: CardType;
+  name: string;
+  factions: FactionId[];
+  cost: number | null;
+  unique: boolean;
+  image?: string;
+  rulesSummary?: string;
+
+  /**
+   * Optional identity for a single physical card that exposes more than one
+   * playable face/record. This keeps printing/collection identity separate
+   * from rules identity.
+   */
+  physicalCardId?: string;
+  alternateFaceId?: string;
+}
+
+export interface ShipCard extends BaseCard {
+  type: "ship";
+  className: string;
+  attack: number;
+  agility: number;
+  hull: number;
+  shields: number;
+  actions: ActionId[];
+  upgradeSlots: UpgradeType[];
+  generic: boolean;
+}
+
+export interface CaptainCard extends BaseCard {
+  type: "captain";
+  skill: number;
+  talentSlots: number;
+  range?: string;
+}
+
+export interface AdmiralCard extends BaseCard {
+  type: "admiral";
+  skill: number;
+  talentSlots: number;
+  range?: string;
+}
+
+export interface UpgradeCard extends BaseCard {
+  type: UpgradeType;
+  attack?: number;
+  range?: string;
+  arc?: "front" | "rear" | "front-and-rear";
+  costMode?: "fixed" | "primary-weapon";
+}
+
+export type GameCard = ShipCard | CaptainCard | AdmiralCard | UpgradeCard;
+
+export interface GameSet {
+  id: string;
+  legacyId: "2017core";
+  name: string;
+  releaseDate: string;
+  parentSet: "Core";
+  factions: FactionId[];
+}
+
+export interface FleetShipV1 {
+  instanceId: string;
+  shipId: string;
+  captainId?: string;
+  upgradeIds: string[];
+}
+
+export interface FleetFileV1 {
+  formatVersion: 1;
+  name: string;
+  ships: FleetShipV1[];
+}
