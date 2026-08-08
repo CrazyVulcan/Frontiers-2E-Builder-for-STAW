@@ -182,11 +182,14 @@ function UpgradeCardFace({
     ?? "Card text has not yet been transcribed into the clean-room fixture.";
 
   return (
-    <div className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type}`}>
+    <div
+      className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type}`}
+      data-card-type={card.type}
+      data-legacy-id={card.legacyId}
+    >
       <div className="upgradeCardArt"><CardArt card={card} /></div>
       <div className="upgradeCardFrame">
         <div className="upgradeNameBand">
-          <span>{titleCase(card.type)} · {card.legacyId}</span>
           <h3>{card.name}</h3>
         </div>
 
@@ -205,7 +208,6 @@ function UpgradeCardFace({
         <div className="upgradeValueRail" aria-label="Printed card values">
           {(card.type === "captain" || card.type === "admiral") && (
             <span className="upgradeValueBadge skillValue" aria-label={`Skill ${card.skill}`}>
-              <GameIcon name={card.type === "captain" ? "card-captain" : "card-admiral"} />
               <strong>{card.skill}</strong>
             </span>
           )}

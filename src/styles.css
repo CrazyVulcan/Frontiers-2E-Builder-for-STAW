@@ -178,41 +178,41 @@ h1, h2, h3, p { margin-top: 0; }
 .upgradeCardArt img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .upgradeCardArt .cardArtFallback { background: #121719; }
 .upgradeCardArt .cardArtFallback > * { display: none; }
-.upgradeCardFrame { position: absolute; inset: 43% 0 0; margin: 0 7px 7px; padding: 0 11px 12px 72px; border-radius: 30px 0 13px 0; background: var(--card-frame); }
-.upgradeNameBand { position: relative; z-index: 1; min-height: 63px; margin: 0 -11px 0 -4px; padding: 10px 62px 8px 18px; display: grid; align-content: center; color: white; background: #020405; }
-.upgradeNameBand span { color: #9eb2b9; font-size: 6px; letter-spacing: .14em; text-transform: uppercase; }
-.upgradeNameBand h3 { margin: 5px 0 0; font: 700 16px/1.05 Orbitron, sans-serif; letter-spacing: -.035em; text-transform: uppercase; }
+.upgradeCardFrame { position: absolute; inset: 45% 0 0; margin: 0 7px 7px; padding: 0 11px 12px 24px; border-radius: 22px 0 13px 0; background: var(--card-frame); }
+.upgradeNameBand { position: relative; z-index: 1; min-height: 48px; margin: 0 -11px 0 -4px; padding: 7px 58px 7px 55px; display: grid; align-content: center; color: white; background: #020405; }
+.upgradeNameBand h3 { margin: 0; font: 700 16px/1.05 Orbitron, sans-serif; letter-spacing: -.035em; text-align: center; text-transform: uppercase; }
 .staw2eGlyph { font-family: "STAW 2E", sans-serif; font-style: normal; font-weight: 400; }
-.upgradeRestrictionRail { position: absolute; z-index: 5; top: 73px; left: -5px; display: grid; gap: 5px; }
-.upgradeRestrictionRail > span { width: 52px; height: 52px; display: grid; place-items: center; border: 4px solid var(--card-frame); border-radius: 50%; color: white; background: #171b1d; box-shadow: 0 0 0 2px #020405; }
-.upgradeRestrictionRail .gameIcon { width: 46px; height: 46px; }
+.upgradeRestrictionRail { position: absolute; z-index: 5; top: -12px; left: -5px; display: grid; gap: 3px; }
+.upgradeRestrictionRail > span { width: 56px; height: 56px; display: grid; place-items: center; border: 0; border-radius: 50%; color: white; background: transparent; }
+.upgradeRestrictionRail .gameIcon { width: 56px; height: 56px; }
 .upgradeRestrictionRail b { font: 700 13px/1 Orbitron, sans-serif; }
-.upgradeValueRail { position: absolute; z-index: 5; top: -15px; right: -3px; width: 70px; display: grid; justify-items: end; gap: 5px; }
-.upgradeValueBadge { width: 66px; height: 66px; padding: 5px; display: grid; grid-template-columns: 24px 1fr; align-items: center; border: 6px solid #168cf3; border-radius: 25px 25px 25px 18px; color: var(--gold); background: #020405; box-shadow: 0 0 0 2px #020405; }
-.upgradeValueBadge .gameIcon { width: 24px; height: 24px; }
-.upgradeValueBadge strong { font: 800 23px/1 Orbitron, sans-serif; }
+.upgradeValueRail { position: absolute; z-index: 5; top: -12px; right: -3px; width: 60px; display: grid; justify-items: end; gap: 4px; }
+.upgradeValueBadge { width: 56px; height: 56px; padding: 4px; display: grid; grid-template-columns: 21px 1fr; align-items: center; border: 5px solid #168cf3; border-radius: 20px 20px 20px 15px; color: var(--gold); background: #020405; box-shadow: 0 0 0 2px #020405; }
+.upgradeValueBadge.skillValue { display: grid; grid-template-columns: 1fr; place-items: center; }
+.upgradeValueBadge .gameIcon { width: 21px; height: 21px; }
+.upgradeValueBadge strong { font: 800 21px/1 Orbitron, sans-serif; }
 .upgradeValueBadge.attackValue { color: #ff2639; }
-.upgradeRangeBadge { min-width: 66px; height: 35px; padding: 3px 7px; display: grid; grid-template-columns: 20px 1fr; align-items: center; gap: 3px; border: 5px solid #168cf3; border-radius: 18px; color: white; background: #020405; box-shadow: 0 0 0 2px #020405; }
-.upgradeRangeBadge .gameIcon { width: 20px; height: 20px; }
-.upgradeRangeBadge strong { font: 700 14px/1 Orbitron, sans-serif; }
-.upgradeKeywordBadge { width: 58px; min-height: 31px; display: grid; place-items: center; border-radius: 14px; background: transparent; }
-.upgradeKeywordBadge .gameIcon { width: 52px; height: 29px; object-fit: contain; }
-.upgradeRulesPanel { position: absolute; inset: 72px 8px 58px 81px; padding: 11px 12px; overflow: hidden; border-radius: 12px; background: var(--cream); font: 500 10px/1.38 Inter, sans-serif; }
-.upgradeCardFace.card-weapon .upgradeRulesPanel { padding-right: 38px; }
-.upgradeRulesPanel > strong { display: block; margin-bottom: 7px; font: 800 13px/1 "Barlow Condensed", sans-serif; letter-spacing: .035em; text-transform: uppercase; }
+.upgradeRangeBadge { min-width: 58px; height: 31px; padding: 3px 6px; display: grid; grid-template-columns: 18px 1fr; align-items: center; gap: 2px; border: 4px solid #168cf3; border-radius: 16px; color: white; background: #020405; box-shadow: 0 0 0 2px #020405; }
+.upgradeRangeBadge .gameIcon { width: 18px; height: 18px; }
+.upgradeRangeBadge strong { font: 700 12px/1 Orbitron, sans-serif; }
+.upgradeKeywordBadge { width: 52px; min-height: 28px; display: grid; place-items: center; border-radius: 13px; background: transparent; }
+.upgradeKeywordBadge .gameIcon { width: 48px; height: 26px; object-fit: contain; }
+.upgradeRulesPanel { position: absolute; inset: 56px 8px 46px 24px; padding: 13px 14px; overflow: hidden; border-radius: 12px; background: var(--cream); font: 500 10px/1.4 Inter, sans-serif; }
+.upgradeCardFace.card-weapon .upgradeRulesPanel { padding-right: 34px; }
+.upgradeRulesPanel > strong { display: block; margin-bottom: 8px; font: 800 13px/1 "Barlow Condensed", sans-serif; letter-spacing: .035em; text-transform: uppercase; }
 .upgradeRulesPanel p { margin: 0; }
-.upgradeTypeSeal, .upgradeTalentSeal { position: absolute; z-index: 3; bottom: -2px; width: 66px; height: 66px; display: grid; place-items: center; border: 5px solid var(--card-frame); border-radius: 50%; color: white; background: #171b1d; box-shadow: 0 0 0 2px #020405; }
+.upgradeTypeSeal, .upgradeTalentSeal { position: absolute; z-index: 3; bottom: -2px; width: 58px; height: 58px; display: grid; place-items: center; border: 0; border-radius: 50%; color: white; background: transparent; }
 .upgradeTypeSeal { left: -5px; }
 .upgradeTalentSeal { left: 50%; transform: translateX(-50%); }
-.upgradeTypeSeal .gameIcon, .upgradeTalentSeal .gameIcon { width: 47px; height: 47px; }
+.upgradeTypeSeal .gameIcon, .upgradeTalentSeal .gameIcon { width: 58px; height: 58px; }
 .upgradeTypeSeal > span { font: 800 22px/1 Orbitron, sans-serif; }
-.upgradeTalentSeal b { position: absolute; right: -2px; bottom: -2px; width: 19px; height: 19px; display: grid; place-items: center; border: 2px solid #020405; border-radius: 50%; color: #020405; background: var(--gold); font-size: 9px; }
-.upgradeFactionCost { position: absolute; z-index: 3; right: -6px; bottom: -2px; height: 68px; min-width: 108px; padding: 4px 8px 4px 4px; display: grid; grid-template-columns: 54px auto; grid-template-rows: 1fr auto; align-items: center; border: 5px solid #168cf3; border-radius: 34px 13px 13px 34px; color: white; background: #020405; box-shadow: 0 0 0 2px #020405; }
-.upgradeFactionCost .gameIcon { grid-row: 1 / 3; width: 52px; height: 52px; }
-.upgradeFactionCost strong { align-self: end; font: 800 20px/1 Orbitron, sans-serif; }
+.upgradeTalentSeal b { position: absolute; right: -1px; bottom: -1px; width: 17px; height: 17px; display: grid; place-items: center; border: 2px solid #020405; border-radius: 50%; color: #020405; background: var(--gold); font-size: 8px; }
+.upgradeFactionCost { position: absolute; z-index: 3; right: -6px; bottom: -2px; height: 56px; min-width: 94px; padding: 3px 7px 3px 3px; display: grid; grid-template-columns: 46px auto; grid-template-rows: 1fr auto; align-items: center; border: 5px solid #168cf3; border-radius: 29px 12px 12px 29px; color: white; background: #020405; box-shadow: 0 0 0 2px #020405; }
+.upgradeFactionCost .gameIcon { grid-row: 1 / 3; width: 45px; height: 45px; }
+.upgradeFactionCost strong { align-self: end; font: 800 18px/1 Orbitron, sans-serif; }
 .upgradeFactionCost small { align-self: start; color: #a9bbc1; font-size: 6px; letter-spacing: .12em; }
 .upgradeCardFace-preview { box-shadow: 0 18px 48px rgba(0,0,0,.66), 0 0 0 1px rgba(85,216,232,.3); }
-.upgradeCardFace-preview .upgradeRulesPanel { top: 68px; bottom: 54px; padding: 10px; font-size: 9.5px; line-height: 1.3; }
+.upgradeCardFace-preview .upgradeRulesPanel { top: 56px; bottom: 46px; padding: 11px 12px; font-size: 9.5px; line-height: 1.35; }
 .upgradeCardFace-preview.card-weapon .upgradeRulesPanel { padding-right: 30px; }
 .upgradeCardFace-preview .upgradeRulesPanel > strong { margin-bottom: 5px; font-size: 11px; }
 .noResults { min-height: 200px; display: grid; place-content: center; gap: 6px; text-align: center; color: var(--muted); }
