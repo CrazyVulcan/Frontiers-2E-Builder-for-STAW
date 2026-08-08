@@ -11,6 +11,13 @@ export type CardType =
 
 export type UpgradeType = Extract<CardType, "crew" | "tech" | "weapon" | "talent">;
 
+export type UniquenessRestriction =
+  | "list-unique"
+  | "ship-unique"
+  | "mirror-universe-unique";
+
+export type UpgradeKeyword = "ordnance";
+
 export type ActionId =
   | "evade"
   | "target-lock"
@@ -28,6 +35,7 @@ export interface BaseCard {
   factions: FactionId[];
   cost: number | null;
   unique: boolean;
+  uniquenessRestrictions?: UniquenessRestriction[];
   image?: string;
   rulesSummary?: string;
 
@@ -72,6 +80,8 @@ export interface UpgradeCard extends BaseCard {
   range?: string;
   arc?: "front" | "rear" | "front-and-rear";
   costMode?: "fixed" | "primary-weapon";
+  keywords?: UpgradeKeyword[];
+  grantsTalentSlots?: number;
 }
 
 export type GameCard = ShipCard | CaptainCard | AdmiralCard | UpgradeCard;

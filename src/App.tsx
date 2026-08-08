@@ -156,7 +156,6 @@ function getCardTypeIcon(card: UpgradeFaceCard): GameIconName | undefined {
   if (card.type === "captain") return "card-captain";
   if (card.type === "admiral") return "card-admiral";
   if (card.type === "talent") return "upgrade-talent";
-  if (card.type === "weapon") return "stat-attack";
   return undefined;
 }
 
@@ -171,14 +170,11 @@ function UpgradeCardFace({
 }) {
   const faction = card.factions[0];
   const typeIcon = getCardTypeIcon(card);
-  const commandValue = card.type === "captain" || card.type === "admiral"
-    ? card.skill
-    : card.type === "weapon" && card.attack
-      ? card.attack
-      : undefined;
-  const commandIcon = card.type === "captain" || card.type === "admiral"
-    ? getCardTypeIcon(card)
-    : "stat-attack";
+  const restrictions = card.uniquenessRestrictions
+    ?? (card.unique ? ["list-unique" as const] : []);
+  const talentSlots = card.type === "captain" || card.type === "admiral"
+    ? card.talentSlots
+    : card.grantsTalentSlots ?? 0;
   const rulesText = card.rulesSummary
     ?? "Card text has not yet been transcribed into the clean-room fixture.";
 
@@ -189,29 +185,62 @@ function UpgradeCardFace({
         <div className="upgradeNameBand">
           <span>{titleCase(card.type)} · {card.legacyId}</span>
           <h3>{card.name}</h3>
-          {card.unique && <GameIcon name="unique" className="upgradeUniqueBadge" label="Unique" />}
         </div>
 
-        {commandValue !== undefined && commandIcon && (
-          <div className="upgradeCommandBadge" aria-label={`${card.type === "weapon" ? "Attack" : "Skill"} ${commandValue}`}>
-            <GameIcon name={commandIcon} />
-            <strong>{commandValue}</strong>
+        {!!restrictions.length && (
+          <div className="upgradeRestrictionRail" aria-label="Card restrictions">
+            {restrictions.map((restriction) => (
+              <span key={restriction} aria-label={titleCase(restriction)}>
+                {restriction === "list-unique" && <GameIcon name="unique" />}
+                {restriction === "ship-unique" && <GameIcon name="one-per" />}
+                {restriction === "mirror-universe-unique" && <b>MU</b>}
+              </span>
+            ))}
           </div>
         )}
+
+        <div className="upgradeValueRail" aria-label="Printed card values">
+          {(card.type === "captain" || card.type === "admiral") && (
+            <span className="upgradeValueBadge skillValue" aria-label={`Skill ${card.skill}`}>
+              <GameIcon name={card.type === "captain" ? "card-captain" : "card-admiral"} />
+              <strong>{card.skill}</strong>
+            </span>
+          )}
+          {card.type === "weapon" && (card.attack || card.costMode === "primary-weapon") && (
+            <span className="upgradeValueBadge attackValue" aria-label={card.attack ? `Attack ${card.attack}` : "Primary weapon value attack"}>
+              <GameIcon name={card.attack ? "stat-attack" : "stat-primary-weapon"} />
+              <strong>{card.attack ?? "PWV"}</strong>
+            </span>
+          )}
+          {card.type === "weapon" && card.range && (
+            <span className="upgradeRangeBadge" aria-label={`Range ${card.range}`}>
+              <GameIcon name="range" />
+              <strong>{card.range}</strong>
+            </span>
+          )}
+          {card.type !== "captain" && card.type !== "admiral" && card.keywords?.map((keyword) => (
+            <span className="upgradeKeywordBadge" key={keyword} aria-label={titleCase(keyword)}>
+              {keyword === "ordnance" && <GameIcon name="keyword-ordnance" />}
+            </span>
+          ))}
+        </div>
 
         <div className="upgradeRulesPanel">
           <strong>{card.type === "captain" || card.type === "admiral" ? "COMMAND ABILITY" : titleCase(card.type)}</strong>
           <p>{rulesText}</p>
-          {card.type === "weapon" && card.range && <small>RANGE {card.range}</small>}
         </div>
 
         <div className="upgradeTypeSeal" aria-label={titleCase(card.type)}>
-          {typeIcon ? <GameIcon name={typeIcon} /> : <span>{card.type.slice(0, 1).toUpperCase()}</span>}
+          {card.type === "weapon"
+            ? <span className="stawWeaponGlyph" aria-hidden="true">aaa</span>
+            : typeIcon
+              ? <GameIcon name={typeIcon} />
+              : <span>{card.type.slice(0, 1).toUpperCase()}</span>}
         </div>
-        {(card.type === "captain" || card.type === "admiral") && card.talentSlots > 0 && (
-          <div className="upgradeTalentSeal" aria-label={`${card.talentSlots} talent slot${card.talentSlots === 1 ? "" : "s"}`}>
+        {talentSlots > 0 && (
+          <div className="upgradeTalentSeal" aria-label={`${talentSlots} talent slot${talentSlots === 1 ? "" : "s"}`}>
             <GameIcon name="upgrade-talent" />
-            {card.talentSlots > 1 && <b>{card.talentSlots}</b>}
+            {talentSlots > 1 && <b>{talentSlots}</b>}
           </div>
         )}
         <div className="upgradeFactionCost">
