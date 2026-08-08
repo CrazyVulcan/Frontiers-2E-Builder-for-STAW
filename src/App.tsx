@@ -183,7 +183,7 @@ function UpgradeCardFace({
 
   return (
     <div
-      className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type}`}
+      className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type} ${restrictions.length ? "has-restrictions" : ""} ${talentSlots ? "has-talents" : ""}`}
       data-card-type={card.type}
       data-legacy-id={card.legacyId}
     >
@@ -241,15 +241,15 @@ function UpgradeCardFace({
             : <span>{card.type.slice(0, 1).toUpperCase()}</span>}
         </div>
         {talentSlots > 0 && (
-          <div className="upgradeTalentSeal" aria-label={`${talentSlots} talent slot${talentSlots === 1 ? "" : "s"}`}>
-            <GameIcon name="upgrade-talent" />
-            {talentSlots > 1 && <b>{talentSlots}</b>}
+          <div className="upgradeTalentRail" aria-label={`${Math.min(talentSlots, 3)} talent slot${talentSlots === 1 ? "" : "s"}`}>
+            {Array.from({ length: Math.min(talentSlots, 3) }, (_, talentIndex) => (
+              <span key={talentIndex}><GameIcon name="upgrade-talent" /></span>
+            ))}
           </div>
         )}
         <div className="upgradeFactionCost">
           <GameIcon name={factionIconName(faction)} label={titleCase(faction)} />
           <strong>{displayCost}</strong>
-          <small>SP</small>
         </div>
       </div>
     </div>
