@@ -77,6 +77,18 @@ describe("2017 Starter catalog fixture", () => {
     });
   });
 
+  it("records supplied Photon Torpedoes firing-arc restrictions", () => {
+    const photonTorpedoes = starter2017Upgrades.find((card) => card.legacyId === "W204")!;
+
+    expect(photonTorpedoes.restrictions).toEqual([
+      { kind: "firing-arc", arc: "primary" },
+      { kind: "firing-arc", arc: "auxiliary" },
+    ]);
+    expect(starter2017Upgrades
+      .filter((card) => card.id !== photonTorpedoes.id)
+      .every((card) => card.restrictions === undefined)).toBe(true);
+  });
+
   it("filters by faction and type without UI logic", () => {
     const klingonShips = filterCatalog(starter2017Cards, {
       query: "",

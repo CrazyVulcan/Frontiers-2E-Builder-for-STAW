@@ -83,3 +83,14 @@ stored directly; a non-numeric or rules-derived value is stored as `special` and
 supplied red special-value symbol. The Primary Weapon Value icon is not used in the top attack
 badge. `PWV` remains valid in the lower cost badge when a card's SP cost is tied to the equipped
 ship's Primary Weapon Value.
+
+## Supplied 2E upgrade restrictions
+
+Upgrade restrictions are stored as structured tagged records rather than text or UI state. The
+schema supports primary, auxiliary, and 360-degree firing arcs; ship-faction and Captain-faction
+requirements; minimum Attack, Defense, Hull, and Shields values; and added SP cost. Restriction
+legality remains a future `packages/core` rules slice and is not implemented inside React.
+
+Photon Torpedoes (`W204`) is currently the only starter card with confirmed 2E restrictions: it
+may use the ship's Primary or Auxiliary Firing Arc. The other supplied restriction icons are
+presentation assets ready for later confirmed content and do not silently add rules to cards.

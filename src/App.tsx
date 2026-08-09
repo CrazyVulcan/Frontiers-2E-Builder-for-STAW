@@ -35,6 +35,7 @@ import type {
   AdmiralCard,
   ShipCard,
   UpgradeCard,
+  UpgradeRestriction,
   UpgradeType,
 } from "../packages/schema/entities";
 import {
@@ -129,6 +130,70 @@ function getQuickAction(
 
 type UpgradeFaceCard = CaptainCard | AdmiralCard | UpgradeCard;
 
+const restrictionFactionFiles = {
+  federation: "Fed",
+  klingon: "Klingon",
+  dominion: "Dominion",
+  independent: "Indy",
+  romulan: "Romulan",
+} as const;
+
+const restrictionStatFiles = {
+  attack: "atk",
+  defense: "def",
+  hull: "hull",
+  shields: "shi",
+} as const;
+
+function restrictionIconFile(restriction: UpgradeRestriction): string | undefined {
+  if (restriction.kind === "firing-arc") return `res_arc_${restriction.arc}.png`;
+  if (restriction.kind === "ship-faction") {
+    return `res_ship_${restrictionFactionFiles[restriction.faction]}.png`;
+  }
+  if (restriction.kind === "captain-faction") {
+    return `res_cap_${restrictionFactionFiles[restriction.faction]}.png`;
+  }
+  if (restriction.kind === "minimum-stat") {
+    return `res_min_${restrictionStatFiles[restriction.stat]}_X.png`;
+  }
+  return undefined;
+}
+
+function restrictionLabel(restriction: UpgradeRestriction): string {
+  if (restriction.kind === "firing-arc") {
+    return `${restriction.arc === "360" ? "360 degree" : titleCase(restriction.arc)} firing arc restriction`;
+  }
+  if (restriction.kind === "ship-faction") {
+    return `${titleCase(restriction.faction)} ship restriction`;
+  }
+  if (restriction.kind === "captain-faction") {
+    return `${titleCase(restriction.faction)} Captain restriction`;
+  }
+  if (restriction.kind === "minimum-stat") {
+    return `Minimum ${titleCase(restriction.stat)} ${restriction.value}`;
+  }
+  return `Additional ${restriction.value} SP cost`;
+}
+
+function UpgradeRestrictionBadge({ restriction }: { restriction: UpgradeRestriction }) {
+  const iconFile = restrictionIconFile(restriction);
+  const value = restriction.kind === "minimum-stat"
+    ? restriction.value
+    : restriction.kind === "additional-sp-cost"
+      ? `+${restriction.value} SP`
+      : undefined;
+
+  return (
+    <span
+      className={`upgradeRestrictionBadge restriction-${restriction.kind} ${iconFile ? "has-icon" : "text-only"}`}
+      aria-label={restrictionLabel(restriction)}
+    >
+      {iconFile && <img src={`./icons/2e/restrictions/${iconFile}`} alt="" draggable={false} />}
+      {value !== undefined && <b>{value}</b>}
+    </span>
+  );
+}
+
 function getCardTypeIcon(card: UpgradeFaceCard): GameIconName | undefined {
   if (card.type === "captain") return "card-captain";
   if (card.type === "admiral") return "card-admiral";
@@ -149,8 +214,15 @@ function UpgradeCardFace({
 }) {
   const faction = card.factions[0];
   const typeIcon = getCardTypeIcon(card);
-  const restrictions = card.uniquenessRestrictions
+  const uniquenessRestrictions = card.uniquenessRestrictions
     ?? (card.unique ? ["fleet-unique" as const] : []);
+  const upgradeRestrictions = card.type === "weapon"
+    || card.type === "tech"
+    || card.type === "crew"
+    || card.type === "talent"
+    ? card.restrictions ?? []
+    : [];
+  const hasRestrictions = uniquenessRestrictions.length > 0 || upgradeRestrictions.length > 0;
   const talentSlots = card.type === "captain" || card.type === "admiral"
     ? card.talentSlots
     : card.grantsTalentSlots ?? 0;
@@ -164,7 +236,7 @@ function UpgradeCardFace({
 
   return (
     <div
-      className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type} ${restrictions.length ? "has-restrictions" : ""} ${talentSlots ? "has-talents" : ""}`}
+      className={`upgradeCardFace upgradeCardFace-${variant} faction-${faction} card-${card.type} ${hasRestrictions ? "has-restrictions" : ""} ${talentSlots ? "has-talents" : ""}`}
       data-card-type={card.type}
       data-legacy-id={card.legacyId}
     >
@@ -174,14 +246,23 @@ function UpgradeCardFace({
           <h3>{card.name}</h3>
         </div>
 
-        {!!restrictions.length && (
+        {hasRestrictions && (
           <div className="upgradeRestrictionRail" aria-label="Card restrictions">
-            {restrictions.map((restriction) => (
+            {uniquenessRestrictions.map((restriction) => (
               <span key={restriction} aria-label={titleCase(restriction)}>
                 {restriction === "fleet-unique" && <GameIcon name="unique" />}
                 {restriction === "ship-unique" && <GameIcon name="one-per" />}
                 {restriction === "mirror-universe-unique" && <b>MU</b>}
               </span>
+            ))}
+            {upgradeRestrictions.length > 0 && uniquenessRestrictions.length === 0 && (
+              <span className="restrictionSlotPlaceholder" aria-hidden="true" />
+            )}
+            {upgradeRestrictions.map((restriction, restrictionIndex) => (
+              <UpgradeRestrictionBadge
+                key={`${restriction.kind}-${restrictionIndex}`}
+                restriction={restriction}
+              />
             ))}
           </div>
         )}
