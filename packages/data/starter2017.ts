@@ -335,6 +335,10 @@ export const starter2017Upgrades: UpgradeCard[] = [
     range: "2-3",
     arc: "front-and-rear",
     costMode: "fixed",
+    restrictions: [
+      { kind: "firing-arc", arc: "primary" },
+      { kind: "firing-arc", arc: "auxiliary" },
+    ],
     rulesSummary:
       "The Attack Value of this [weapon] is this ship's Primary Weapon Value +1. ATTACK: Spend this ship's [target-lock] Token, disable this card, and target an opposing ship. This ship may convert all [blank] into [battlestations].",
   },

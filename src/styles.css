@@ -187,6 +187,12 @@ h1, h2, h3, p { margin-top: 0; }
 .upgradeRestrictionRail > span { width: 46px; height: 46px; display: grid; place-items: center; border: 0; border-radius: 50%; color: white; background: transparent; }
 .upgradeRestrictionRail .gameIcon { width: 46px; height: 46px; }
 .upgradeRestrictionRail b { font: 700 13px/1 Orbitron, sans-serif; }
+.upgradeRestrictionRail .restrictionSlotPlaceholder { visibility: hidden; }
+.upgradeRestrictionBadge { position: relative; isolation: isolate; }
+.upgradeRestrictionBadge img { position: absolute; inset: 0; width: 46px; height: 46px; object-fit: contain; }
+.upgradeRestrictionBadge b { position: relative; z-index: 1; color: white; font: 800 13px/1 Orbitron, sans-serif; text-shadow: 0 1px 2px #000, 0 0 3px #000, 0 0 5px #000; }
+.upgradeRestrictionBadge.text-only { border: 3px solid #168cf3; border-radius: 14px; color: var(--gold); background: #020405; box-shadow: 0 0 0 2px #020405; }
+.upgradeRestrictionBadge.text-only b { color: var(--gold); font-size: 9px; white-space: nowrap; }
 .upgradeValueRail { position: absolute; z-index: 5; top: calc(6.5% - 23px); right: 1px; width: 50px; display: grid; justify-items: end; gap: 4px; }
 .upgradeValueBadge { width: 46px; height: 46px; padding: 4px; display: grid; grid-template-columns: 17px 1fr; align-items: center; border: 4px solid #168cf3; border-radius: 17px 17px 17px 13px; color: var(--gold); background: #020405; box-shadow: 0 0 0 2px #020405; }
 .upgradeValueBadge.skillValue { display: grid; grid-template-columns: 1fr; place-items: center; }

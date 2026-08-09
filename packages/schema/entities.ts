@@ -18,6 +18,19 @@ export type UniquenessRestriction =
 
 export type UpgradeKeyword = "ordnance";
 
+export type RestrictionFactionId =
+  | FactionId
+  | "dominion"
+  | "independent"
+  | "romulan";
+
+export type UpgradeRestriction =
+  | { kind: "firing-arc"; arc: "primary" | "auxiliary" | "360" }
+  | { kind: "ship-faction"; faction: RestrictionFactionId }
+  | { kind: "captain-faction"; faction: RestrictionFactionId }
+  | { kind: "minimum-stat"; stat: "attack" | "defense" | "hull" | "shields"; value: number }
+  | { kind: "additional-sp-cost"; value: number };
+
 export type ActionId =
   | "evade"
   | "target-lock"
@@ -89,6 +102,8 @@ export interface UpgradeCard extends BaseCard {
   costMode?: "fixed" | "primary-weapon";
   keywords?: UpgradeKeyword[];
   grantsTalentSlots?: number;
+  /** Structured printed restrictions; enforcement belongs in packages/core. */
+  restrictions?: UpgradeRestriction[];
 }
 
 export type GameCard = ShipCard | CaptainCard | AdmiralCard | UpgradeCard;
