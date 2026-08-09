@@ -64,6 +64,19 @@ describe("2017 Starter catalog fixture", () => {
     expect(picard.rulesSummary).toContain("[battlestations]");
   });
 
+  it("records an attack value for every Weapon upgrade", () => {
+    const weaponAttacks = Object.fromEntries(starter2017Upgrades
+      .filter((card) => card.type === "weapon")
+      .map((card) => [card.name, card.attack]));
+
+    expect(weaponAttacks).toEqual({
+      "Photon Torpedoes": "special",
+      "Tactical Station": "special",
+      "Disruptor Cannon": 5,
+      "Torpedo Fusillade": "special",
+    });
+  });
+
   it("filters by faction and type without UI logic", () => {
     const klingonShips = filterCatalog(starter2017Cards, {
       query: "",

@@ -75,3 +75,11 @@ The exact rules copy added in version 0.10.0 was supplied in
 `STAW-2E-Content-2017-Starter-Populated.xlsx`. Records marked as legacy seeds in that workbook
 remain subject to 2E review; token rendering does not promote their rules or costs to confirmed 2E
 values.
+
+## Supplied 2E Weapon attack values
+
+Every Weapon upgrade displays an attack value in the 2E card layout. A numeric printed value is
+stored directly; a non-numeric or rules-derived value is stored as `special` and rendered with the
+supplied red special-value symbol. The Primary Weapon Value icon is not used in the top attack
+badge. `PWV` remains valid in the lower cost badge when a card's SP cost is tied to the equipped
+ship's Primary Weapon Value.

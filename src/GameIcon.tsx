@@ -9,6 +9,7 @@ export type GameIconName =
   | "stat-shield"
   | "stat-auxiliary-reserve"
   | "stat-primary-weapon"
+  | "attack-special"
   | "card-captain"
   | "card-admiral"
   | "upgrade-weapon"
@@ -53,7 +54,7 @@ export function GameIcon({
   return (
     <img
       className={`gameIcon ${className}`.trim()}
-      src={`./icons/2e/${name}.${name === "range" ? "svg" : "png"}`}
+      src={`./icons/2e/${name}.${name === "range" || name === "attack-special" ? "svg" : "png"}`}
       alt={label ?? ""}
       aria-hidden={label ? undefined : true}
       draggable={false}
