@@ -36,6 +36,7 @@ export interface BaseCard {
   unique: boolean;
   uniquenessRestrictions?: UniquenessRestriction[];
   image?: string;
+  /** Rules copy may contain semantic icon tokens such as `[time]` or `[hit]`. */
   rulesSummary?: string;
 
   /**
@@ -50,6 +51,8 @@ export interface BaseCard {
 export interface ShipCard extends BaseCard {
   type: "ship";
   className: string;
+  /** Presentation asset for the ship-class silhouette printed beside the class name. */
+  classIcon?: string;
   attack: number;
   agility: number;
   hull: number;

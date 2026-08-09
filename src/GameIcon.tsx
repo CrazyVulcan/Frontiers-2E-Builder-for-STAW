@@ -7,6 +7,7 @@ export type GameIconName =
   | "stat-agility"
   | "stat-hull"
   | "stat-shield"
+  | "stat-auxiliary-reserve"
   | "stat-primary-weapon"
   | "card-captain"
   | "card-admiral"

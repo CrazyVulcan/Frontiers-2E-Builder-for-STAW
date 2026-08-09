@@ -54,9 +54,24 @@ The U.S.S. Enterprise-D (`S274`) values below come from the supplied 2E card moc
 the legacy 2017 database: 25 SP ship cost, 28 SP upgrade limit, Auxiliary Reserve 2, and a
 4 / 2 / 6 / 3 stat line. Its rules summary is transcribed from that mockup.
 
+The Galaxy, Nebula, Vor'cha, and K'Vort class silhouettes and the Auxiliary Reserve icon are
+presentation assets supplied for the 2E card layout; they do not add or infer rules values.
+
 The remaining seven ship records deliberately leave `upgradeSpLimit` and
 `auxiliaryPowerReserve` unresolved until their 2E cards are supplied.
 
 Sensor Echo is not retained as a printed action. In 2E, a ship with Cloak may use Sensor Echo
 while it has an active Cloak token; this gameplay condition is not duplicated on the builder's
 action bar. Additional 2E actions remain unresolved pending supplied icon references.
+
+## Rules-text icon tokens
+
+Rules copy may use bracketed semantic tokens such as `[time]`, `[hit]`, `[crit]`,
+`[battlestations]`, or `[crew]`. Canonical data keeps those readable tokens; the web renderer maps
+the controlled vocabulary to the supplied STAW 2E font. Unknown tokens remain visible as text so a
+misspelling or future symbol cannot silently disappear.
+
+The exact rules copy added in version 0.10.0 was supplied in
+`STAW-2E-Content-2017-Starter-Populated.xlsx`. Records marked as legacy seeds in that workbook
+remain subject to 2E review; token rendering does not promote their rules or costs to confirmed 2E
+values.

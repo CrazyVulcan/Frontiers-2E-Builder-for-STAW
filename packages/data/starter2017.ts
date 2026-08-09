@@ -28,6 +28,7 @@ export const starter2017Ships: ShipCard[] = [
     unique: true,
     image: "https://i.imgur.com/8jzC0UF.png",
     className: "Galaxy Class",
+    classIcon: "./icons/2e/ships/fed-galaxy.png",
     attack: 4,
     agility: 2,
     hull: 6,
@@ -50,6 +51,7 @@ export const starter2017Ships: ShipCard[] = [
     cost: 22,
     unique: false,
     className: "Galaxy Class",
+    classIcon: "./icons/2e/ships/fed-galaxy.png",
     attack: 4,
     agility: 1,
     hull: 5,
@@ -69,6 +71,7 @@ export const starter2017Ships: ShipCard[] = [
     unique: true,
     image: "https://i.imgur.com/d19utFF.png",
     className: "Nebula Class",
+    classIcon: "./icons/2e/ships/fed-nebula.png",
     attack: 4,
     agility: 1,
     hull: 4,
@@ -76,7 +79,7 @@ export const starter2017Ships: ShipCard[] = [
     actions: ["evade", "target-lock", "scan", "battlestations"],
     upgradeSlots: ["tech", "weapon", "crew", "crew", "crew"],
     generic: false,
-    rulesSummary: "While defending, cancel one hit result.",
+    rulesSummary: "WHEN DEFENDING: Cancel 1 [hit].",
   },
   {
     id: "ship-fed-nebula-generic-2017",
@@ -88,6 +91,7 @@ export const starter2017Ships: ShipCard[] = [
     cost: 19,
     unique: false,
     className: "Nebula Class",
+    classIcon: "./icons/2e/ships/fed-nebula.png",
     attack: 4,
     agility: 1,
     hull: 4,
@@ -106,6 +110,7 @@ export const starter2017Ships: ShipCard[] = [
     cost: 25,
     unique: true,
     className: "Vor'cha Class",
+    classIcon: "./icons/2e/ships/kli-vorcha.png",
     attack: 5,
     agility: 1,
     hull: 5,
@@ -114,7 +119,7 @@ export const starter2017Ships: ShipCard[] = [
     upgradeSlots: ["tech", "weapon", "crew", "crew"],
     generic: false,
     rulesSummary:
-      "Its action can place a battlestations token beside each cloaked friendly ship at Range 1–2.",
+      "ACTION: Target all Cloaked friendly ships within Range 1–2. Place a [battlestations] Token beside each target ship.",
   },
   {
     id: "ship-kli-vorcha-generic-2017",
@@ -126,6 +131,7 @@ export const starter2017Ships: ShipCard[] = [
     cost: 22,
     unique: false,
     className: "Vor'cha Class",
+    classIcon: "./icons/2e/ships/kli-vorcha.png",
     attack: 5,
     agility: 1,
     hull: 5,
@@ -145,6 +151,7 @@ export const starter2017Ships: ShipCard[] = [
     unique: true,
     image: "https://i.imgur.com/V7tqAKg.png",
     className: "K'Vort Class",
+    classIcon: "./icons/2e/ships/kli-kvort.png",
     attack: 4,
     agility: 1,
     hull: 5,
@@ -165,6 +172,7 @@ export const starter2017Ships: ShipCard[] = [
     cost: 20,
     unique: false,
     className: "K'Vort Class",
+    classIcon: "./icons/2e/ships/kli-kvort.png",
     attack: 4,
     agility: 1,
     hull: 5,
@@ -190,7 +198,7 @@ export const starter2017Captains: CaptainCard[] = [
     talentSlots: 2,
     range: "1-2",
     rulesSummary:
-      "His action places time tokens on his card and distributes battlestations to nearby friendly ships.",
+      "ACTION: Place 2 [time] Tokens on this card and target all friendly ships within Range 1–2. Place a [battlestations] Token beside this ship and all target ships.",
   },
   {
     id: "captain-fed-riker-2017",
@@ -206,7 +214,7 @@ export const starter2017Captains: CaptainCard[] = [
     talentSlots: 1,
     range: "1-2",
     rulesSummary:
-      "His action can protect crew on a friendly target from opposing effects for the round.",
+      "ACTION: Target this ship or a friendly ship within Range 1–2. [crew] Upgrades equipped to the target ship cannot be affected by opposing effects this game round.",
   },
   {
     id: "captain-fed-data-2017",
@@ -221,6 +229,8 @@ export const starter2017Captains: CaptainCard[] = [
     skill: 4,
     talentSlots: 0,
     range: "1-2",
+    rulesSummary:
+      "ACTION: Target a Cloaked opposing ship within Range 1–2. Remove the target ship's [cloak] Token and enable its Shields.",
   },
   {
     id: "captain-kli-duras-2017",
@@ -235,7 +245,7 @@ export const starter2017Captains: CaptainCard[] = [
     skill: 6,
     talentSlots: 1,
     rulesSummary:
-      "Modifies how Klingon and Romulan talent upgrades are costed and revealed.",
+      "[talent] Upgrades of the Romulan or Klingon faction equipped to this Captain cost 3 SP. [talent] Upgrades equipped to this Captain start the game face down; flip one face up the first time it is used.",
   },
   {
     id: "captain-kli-kmpec-2017",
@@ -250,7 +260,7 @@ export const starter2017Captains: CaptainCard[] = [
     skill: 5,
     talentSlots: 1,
     rulesSummary:
-      "His action spends one shield token to place three evade tokens beside his ship.",
+      "ACTION: Spend one Shield Token from this ship. Place 3 [evade] Tokens beside this ship.",
     physicalCardId: "physical-2017-kmpec-admiral",
     alternateFaceId: "admiral-kli-kmpec-2017",
   },
@@ -266,6 +276,8 @@ export const starter2017Captains: CaptainCard[] = [
     image: "https://i.imgur.com/7fb11sA.png",
     skill: 4,
     talentSlots: 0,
+    rulesSummary:
+      "At the beginning of the game round, you may flip this card. WHEN ATTACKING: If this ship is Cloaked, this ship rolls +1 attack die.",
     physicalCardId: "physical-2017-lursa-betor",
     alternateFaceId: "captain-kli-betor-2017",
   },
@@ -281,6 +293,8 @@ export const starter2017Captains: CaptainCard[] = [
     image: "https://i.imgur.com/f3KwkDM.png",
     skill: 4,
     talentSlots: 0,
+    rulesSummary:
+      "At the beginning of the game round, you may flip this card. WHEN DEFENDING: If this ship is Cloaked, this ship rolls +2 defense dice.",
     physicalCardId: "physical-2017-lursa-betor",
     alternateFaceId: "captain-kli-lursa-2017",
   },
@@ -300,7 +314,7 @@ export const starter2017Admirals: AdmiralCard[] = [
     skill: 1,
     talentSlots: 1,
     rulesSummary:
-      "Fleet action: spend a shield token from this ship to place three evade tokens beside it.",
+      "FLEET ACTION: Spend one Shield Token from this ship. Place 3 [evade] Tokens beside this ship.",
     physicalCardId: "physical-2017-kmpec-admiral",
     alternateFaceId: "captain-kli-kmpec-2017",
   },
@@ -321,7 +335,7 @@ export const starter2017Upgrades: UpgradeCard[] = [
     arc: "front-and-rear",
     costMode: "fixed",
     rulesSummary:
-      "Its attack value is the equipped ship's primary weapon value plus one.",
+      "The Attack Value of this [weapon] is this ship's Primary Weapon Value +1. ATTACK: Spend this ship's [target-lock] Token, disable this card, and target an opposing ship. This ship may convert all [blank] into [battlestations].",
   },
   {
     id: "upgrade-fed-riker-maneuver-2017",
@@ -333,6 +347,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 4,
     unique: true,
     image: "https://i.imgur.com/0IbEGjJ.png",
+    rulesSummary:
+      "WHEN DEFENDING: If the attacking ship is not in this ship's Primary Firing Arc, discard this card. Remove all [target-lock] and [battlestations] Tokens beside the attacking ship. Place an [aux] Token beside this ship and the attacking ship.",
   },
   {
     id: "upgrade-fed-make-it-so-2017",
@@ -344,6 +360,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 3,
     unique: true,
     image: "https://i.imgur.com/baPnonN.png",
+    rulesSummary:
+      "ACTION: Discard this card. This ship may perform two Actions on Admiral Cards, Captain Cards, and/or [crew] Upgrades equipped to it as Free Actions.",
   },
   {
     id: "upgrade-fed-exocomp-2017",
@@ -355,6 +373,7 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 4,
     unique: false,
     image: "https://i.imgur.com/rpu9z3y.png",
+    rulesSummary: "PLANNING PHASE: Place 2 [time] Tokens on this card. Repair 1 damage to this ship's Hull.",
   },
   {
     id: "upgrade-fed-tactical-station-2017",
@@ -366,6 +385,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 4,
     unique: false,
     image: "https://i.imgur.com/ke2HcsD.png",
+    rulesSummary:
+      "Add 1 [weapon] to this ship's Upgrade Bar. WHEN ATTACKING: Disable this card; this ship rolls +1 attack die this game round. WHEN ATTACKING: Discard this card; this ship rolls +2 attack dice this game round.",
   },
   {
     id: "upgrade-fed-geordi-2017",
@@ -377,6 +398,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 3,
     unique: true,
     image: "https://i.imgur.com/tAUAMrN.png",
+    rulesSummary:
+      "ACTIVATION PHASE: After this ship reveals its Maneuver, place 2 [time] Tokens on this card. This ship may increase or decrease the speed of the revealed Maneuver by 2. Its color remains the same. This ship cannot perform an Action this game round.",
   },
   {
     id: "upgrade-fed-miles-2017",
@@ -388,6 +411,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 2,
     unique: true,
     image: "https://i.imgur.com/wMnXEOe.png",
+    rulesSummary:
+      "PLANNING PHASE: Disable this card. Remove a Disable Token from a [tech] or [weapon] Upgrade equipped to this ship.",
   },
   {
     id: "upgrade-fed-troi-2017",
@@ -400,6 +425,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     unique: true,
     image: "https://i.imgur.com/goEytVt.png",
     range: "1-3",
+    rulesSummary:
+      "PLANNING PHASE: After all ships have chosen their Maneuver, discard this card and target two opposing ships within Range 1–3. Look at their Maneuver dials, then this ship may change its chosen Maneuver. The target ships' Maneuvers may not be changed for the rest of the game round.",
   },
   {
     id: "upgrade-fed-crusher-2017",
@@ -411,6 +438,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 3,
     unique: true,
     image: "https://i.imgur.com/uGhhjJa.png",
+    rulesSummary:
+      "ACTIVATION PHASE: Disable this card. Remove a Disable Token from a [crew] Upgrade equipped to this ship. ACTION: Discard this card. Equip a [crew] Upgrade with a cost of 4 SP or less that was discarded from this ship to this ship.",
   },
   {
     id: "upgrade-fed-hobson-2017",
@@ -422,6 +451,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 2,
     unique: true,
     image: "https://i.imgur.com/OlVkNoQ.png",
+    rulesSummary:
+      "WHEN ATTACKING: If the defending ship is Cloaked, the defending ship rolls -2 defense dice.",
   },
 
   {
@@ -434,6 +465,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 3,
     unique: false,
     image: "https://i.imgur.com/xeANmR1.png",
+    rulesSummary:
+      "WHEN DEFENDING: When this ship receives a face-up Damage Card, turn that Damage Card face down unless it is a \"Warp Core Breach\".",
   },
   {
     id: "upgrade-kli-disruptor-cannon-2017",
@@ -448,6 +481,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     attack: 5,
     range: "1-2",
     arc: "rear",
+    rulesSummary:
+      "ATTACK: Disable this card and target an opposing ship. If the defending ship has an [aux] Token beside it, this ship rolls +1 attack die.",
   },
   {
     id: "upgrade-kli-torpedo-fusillade-2017",
@@ -463,7 +498,7 @@ export const starter2017Upgrades: UpgradeCard[] = [
     arc: "front",
     costMode: "primary-weapon",
     rulesSummary:
-      "Its SP cost and attack value equal the equipped ship's primary weapon value.",
+      "The cost and Attack Value of this [weapon] are equal to this ship's Primary Weapon Value. ATTACK: Remove this card from the game and target all opposing ships. Make a separate attack roll against each target ship.",
   },
   {
     id: "upgrade-kli-worf-2017",
@@ -475,6 +510,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 5,
     unique: true,
     image: "https://i.imgur.com/mwgFdQi.png",
+    rulesSummary:
+      "WHEN ATTACKING: If this ship is Cloaked, convert all [blank] to [hit].",
   },
   {
     id: "upgrade-kli-kurn-2017",
@@ -486,6 +523,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 4,
     unique: true,
     image: "https://i.imgur.com/mSNzZGn.png",
+    rulesSummary:
+      "ACTION: Discard this card. Equip a [weapon] Upgrade with a cost of 5 SP or less that was discarded from this ship to this ship.",
   },
   {
     id: "upgrade-kli-helmsman-2017",
@@ -497,6 +536,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 3,
     unique: false,
     image: "https://i.imgur.com/N5Q1tYR.png",
+    rulesSummary:
+      "ACTIVATION PHASE: Place 2 [time] Tokens on this card. Perform a [scan] Action as a Free Action.",
   },
   {
     id: "upgrade-kli-toral-2017",
@@ -508,6 +549,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 2,
     unique: true,
     image: "https://i.imgur.com/fU76e0I.png",
+    rulesSummary:
+      "WHEN DEFENDING: This ship may convert 1 [battlestations] into 1 [evade].",
   },
   {
     id: "upgrade-kli-bekk-2017",
@@ -519,6 +562,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 1,
     unique: false,
     image: "https://i.imgur.com/o7D4yn6.png",
+    rulesSummary:
+      "WHEN ATTACKING: Discard this card. Convert 1 [hit] into 1 [crit].",
   },
   {
     id: "upgrade-kli-blood-oath-2017",
@@ -531,6 +576,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     unique: true,
     image: "https://i.imgur.com/KBzIuzI.png",
     range: "1-3",
+    rulesSummary:
+      "ACTION: Discard this card, target a Captain equipped to an opposing ship, and target the Captain equipped to this ship. Both controllers roll 5 attack dice. Whoever rolls the most [battlestations], re-rolling ties, adds +2 to their target Captain's Skill for the rest of the game; the other target Captain is discarded.",
   },
   {
     id: "upgrade-kli-good-day-to-die-2017",
@@ -542,6 +589,8 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 5,
     unique: true,
     image: "https://i.imgur.com/ZEZCzna.png",
+    rulesSummary:
+      "ACTION: Discard this card. All ships may convert all [hit] into [crit] this game round.",
   },
 ];
 
