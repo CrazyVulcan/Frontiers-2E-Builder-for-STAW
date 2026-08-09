@@ -47,3 +47,16 @@ playable rules identity.
   sharing `physical-2017-kmpec-admiral`.
 
 This relationship belongs in canonical data, not in React conditionals.
+
+## Supplied 2E ship interpretation
+
+The U.S.S. Enterprise-D (`S274`) values below come from the supplied 2E card mockup rather than
+the legacy 2017 database: 25 SP ship cost, 28 SP upgrade limit, Auxiliary Reserve 2, and a
+4 / 2 / 6 / 3 stat line. Its rules summary is transcribed from that mockup.
+
+The remaining seven ship records deliberately leave `upgradeSpLimit` and
+`auxiliaryPowerReserve` unresolved until their 2E cards are supplied.
+
+Sensor Echo is not retained as a printed action. In 2E, a ship with Cloak may use Sensor Echo
+while it has an active Cloak token; this gameplay condition is not duplicated on the builder's
+action bar. Additional 2E actions remain unresolved pending supplied icon references.

@@ -10,6 +10,7 @@ import {
   assignCaptain,
   calculateBaseFleetCost,
   calculateFleetCostBreakdown,
+  calculateUsedUpgradeSp,
   canAddShip,
   canAssignCaptain,
   canEquipUpgrade,
@@ -43,7 +44,7 @@ describe("fleet core", () => {
 
     const byId = new Map(starter2017Ships.map((ship) => [ship.id, ship]));
 
-    expect(calculateBaseFleetCost(fleet, byId)).toBe(50);
+    expect(calculateBaseFleetCost(fleet, byId)).toBe(49);
   });
 
   it("assigns captains and equips upgrades as immutable fleet operations", () => {
@@ -99,6 +100,30 @@ describe("fleet core", () => {
     expect(canAddShip(fleet, enterprise).allowed).toBe(false);
   });
 
+  it("enforces the ship's upgrade SP allowance independently from ship cost", () => {
+    const enterprise = cardByLegacyId(starter2017Ships, "S274");
+    const photonTorpedoes = cardByLegacyId(starter2017Upgrades, "W204");
+    const exocomp = cardByLegacyId(starter2017Upgrades, "T163");
+    const tightBudgetShip = { ...enterprise, upgradeSpLimit: 3 };
+    const tightBudgetIndex = {
+      ...index,
+      shipsById: new Map(index.shipsById).set(enterprise.id, tightBudgetShip),
+    };
+
+    let fleet = addShip(createEmptyFleet(), enterprise, "enterprise");
+    fleet = equipUpgrade(fleet, "enterprise", photonTorpedoes.id);
+
+    expect(calculateUsedUpgradeSp(enterprise, fleet.ships[0], index.upgradesById)).toBe(2);
+    expect(canEquipUpgrade(fleet, "enterprise", exocomp, tightBudgetIndex)).toEqual({
+      allowed: false,
+      reason: "Upgrade SP limit exceeded on U.S.S. Enterprise-D (6 / 3).",
+    });
+
+    const importedOverBudgetFleet = equipUpgrade(fleet, "enterprise", exocomp.id);
+    expect(validateFleet(importedOverBudgetFleet, tightBudgetIndex).map((issue) => issue.code))
+      .toContain("upgrade-sp-overflow");
+  });
+
   it("calculates loadout costs, faction penalties, and variable weapon costs", () => {
     const enterprise = cardByLegacyId(starter2017Ships, "S274");
     const duras = cardByLegacyId(starter2017Captains, "Cap656");
@@ -111,11 +136,11 @@ describe("fleet core", () => {
     fleet = equipUpgrade(fleet, "enterprise", photonTorpedoes.id);
 
     expect(calculateFleetCostBreakdown(fleet, index)).toEqual({
-      ships: 26,
+      ships: 25,
       captains: 5,
       upgrades: 6,
       factionPenalties: 2,
-      total: 39,
+      total: 38,
     });
   });
 

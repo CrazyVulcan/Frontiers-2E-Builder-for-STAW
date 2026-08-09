@@ -23,8 +23,7 @@ export type ActionId =
   | "target-lock"
   | "scan"
   | "battlestations"
-  | "cloak"
-  | "sensor-echo";
+  | "cloak";
 
 export interface BaseCard {
   id: string;
@@ -55,6 +54,10 @@ export interface ShipCard extends BaseCard {
   agility: number;
   hull: number;
   shields: number;
+  /** Maximum upgrade SP that may be equipped to this ship. */
+  upgradeSpLimit?: number;
+  /** Auxiliary Power tokens tolerated before the ship loses its action. */
+  auxiliaryPowerReserve?: number;
   actions: ActionId[];
   upgradeSlots: UpgradeType[];
   generic: boolean;
