@@ -156,6 +156,11 @@ function UpgradeCardFace({
     : card.grantsTalentSlots ?? 0;
   const rulesText = card.rulesSummary
     ?? "Card text has not yet been transcribed into the clean-room fixture.";
+  const rulesDensity = rulesText.length > 235
+    ? "dense"
+    : rulesText.length > 200
+      ? "compact"
+      : "standard";
 
   return (
     <div
@@ -206,7 +211,7 @@ function UpgradeCardFace({
           ))}
         </div>
 
-        <div className="upgradeRulesPanel">
+        <div className={`upgradeRulesPanel rules-${rulesDensity}`}>
           <strong>{card.type === "captain" || card.type === "admiral" ? "COMMAND ABILITY" : titleCase(card.type)}</strong>
           <p><RulesText text={rulesText} /></p>
         </div>
