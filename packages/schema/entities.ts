@@ -82,7 +82,8 @@ export interface AdmiralCard extends BaseCard {
 
 export interface UpgradeCard extends BaseCard {
   type: UpgradeType;
-  attack?: number;
+  /** Printed Weapon attack value, or a supplied symbol when the value is non-numeric. */
+  attack?: number | "special";
   range?: string;
   arc?: "front" | "rear" | "front-and-rear";
   costMode?: "fixed" | "primary-weapon";

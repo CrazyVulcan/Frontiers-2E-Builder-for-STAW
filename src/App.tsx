@@ -192,15 +192,18 @@ function UpgradeCardFace({
               <strong>{card.skill}</strong>
             </span>
           )}
-          {card.type === "weapon" && (card.attack || card.costMode === "primary-weapon") && (
-            <span className="upgradeValueBadge attackValue" aria-label={card.attack ? `Attack ${card.attack}` : "Primary weapon value attack"}>
-              <GameIcon name={card.attack ? "stat-attack" : "stat-primary-weapon"} />
-              <strong>{card.attack ?? "PWV"}</strong>
+          {card.type === "weapon" && card.attack !== undefined && (
+            <span
+              className="upgradeValueBadge attackValue"
+              aria-label={typeof card.attack === "number" ? `Attack ${card.attack}` : "Special attack value"}
+            >
+              {typeof card.attack === "number"
+                ? <strong>{card.attack}</strong>
+                : <GameIcon name="attack-special" />}
             </span>
           )}
           {card.type === "weapon" && card.range && (
             <span className="upgradeRangeBadge" aria-label={`Range ${card.range}`}>
-              <GameIcon name="range" />
               <strong>{card.range}</strong>
             </span>
           )}

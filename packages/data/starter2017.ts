@@ -331,6 +331,7 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 2,
     unique: false,
     image: "https://i.imgur.com/3VahUSz.png",
+    attack: "special",
     range: "2-3",
     arc: "front-and-rear",
     costMode: "fixed",
@@ -385,6 +386,7 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 4,
     unique: false,
     image: "https://i.imgur.com/ke2HcsD.png",
+    attack: "special",
     rulesSummary:
       "Add 1 [weapon] to this ship's Upgrade Bar. WHEN ATTACKING: Disable this card; this ship rolls +1 attack die this game round. WHEN ATTACKING: Discard this card; this ship rolls +2 attack dice this game round.",
   },
@@ -494,6 +496,7 @@ export const starter2017Upgrades: UpgradeCard[] = [
     cost: 0,
     unique: true,
     image: "https://i.imgur.com/a4D3EpM.png",
+    attack: "special",
     range: "2-3",
     arc: "front",
     costMode: "primary-weapon",
