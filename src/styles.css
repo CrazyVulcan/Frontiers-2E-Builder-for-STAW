@@ -448,10 +448,10 @@ footer { width: min(var(--max), calc(100% - 36px)); margin: 0 auto; padding: 24p
 
 .fleetCardTable { position: relative; padding: 18px 18px 24px 28px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 17px; align-items: start; border-radius: 0 0 29px 3px; background-image: linear-gradient(rgba(255,255,255,.014) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.014) 1px, transparent 1px); background-size: 28px 28px; }
 .fleetTableCard { position: relative; z-index: 1; min-width: 0; outline: 0; }
-.fleetTableCard > .upgradeCardFace, .fleetTableCard > .shipCardFace { transform-origin: center center; transition: transform .18s ease, filter .18s ease, box-shadow .18s ease; }
-.fleetTableCard:hover, .fleetTableCard:focus, .fleetTableCard:focus-within { z-index: 30; }
-.fleetTableCard:hover > .upgradeCardFace, .fleetTableCard:focus > .upgradeCardFace, .fleetTableCard:focus-within > .upgradeCardFace,
-.fleetTableCard:hover > .shipCardFace, .fleetTableCard:focus > .shipCardFace, .fleetTableCard:focus-within > .shipCardFace { transform: translateY(-8px) scale(1.32); filter: saturate(1.08); box-shadow: 0 28px 65px rgba(0,0,0,.72), 0 0 0 2px rgba(243,189,102,.34); }
+.fleetTableCard > .upgradeCardFace, .fleetTableCard > .shipCardFace { transform-origin: center center; transition: transform .18s ease 0s, filter .18s ease 0s, box-shadow .18s ease 0s; }
+.fleetTableCard:has(> .upgradeCardFace:hover), .fleetTableCard:has(> .shipCardFace:hover), .fleetTableCard:focus { z-index: 30; }
+.fleetTableCard > .upgradeCardFace:hover, .fleetTableCard > .shipCardFace:hover { transform: translateY(-8px) scale(1.5); filter: saturate(1.08); box-shadow: 0 28px 65px rgba(0,0,0,.72), 0 0 0 2px rgba(243,189,102,.34); transition-delay: 1s; }
+.fleetTableCard:focus > .upgradeCardFace, .fleetTableCard:focus > .shipCardFace { transform: translateY(-8px) scale(1.5); filter: saturate(1.08); box-shadow: 0 28px 65px rgba(0,0,0,.72), 0 0 0 2px rgba(243,189,102,.34); }
 .fleetTableCardMeta { position: relative; z-index: 40; min-height: 29px; margin-top: 8px; padding: 5px 8px 5px 11px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-radius: 12px 2px 12px 2px; color: #1b1618; background: var(--orange); font-size: 7px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .fleetTableCard:nth-child(3n + 2) .fleetTableCardMeta { background: var(--lilac); }
 .fleetTableCard:nth-child(3n) .fleetTableCardMeta { background: var(--gold); }
