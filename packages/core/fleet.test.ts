@@ -96,7 +96,7 @@ describe("fleet core", () => {
 
     fleet = equipUpgrade(fleet, "enterprise", makeItSo.id);
     expect(canEquipUpgrade(fleet, "sutherland", makeItSo, index).allowed).toBe(false);
-    expect(canAssignCaptain(fleet, "sutherland", picard).allowed).toBe(false);
+    expect(canAssignCaptain(fleet, "sutherland", picard, index).allowed).toBe(false);
     expect(canAddShip(fleet, enterprise).allowed).toBe(false);
   });
 
@@ -113,7 +113,12 @@ describe("fleet core", () => {
     let fleet = addShip(createEmptyFleet(), enterprise, "enterprise");
     fleet = equipUpgrade(fleet, "enterprise", photonTorpedoes.id);
 
-    expect(calculateUsedUpgradeSp(enterprise, fleet.ships[0], index.upgradesById)).toBe(2);
+    expect(calculateUsedUpgradeSp(
+      enterprise,
+      fleet.ships[0],
+      index.upgradesById,
+      index.captainsById,
+    )).toBe(2);
     expect(canEquipUpgrade(fleet, "enterprise", exocomp, tightBudgetIndex)).toEqual({
       allowed: false,
       reason: "Upgrade SP limit exceeded on U.S.S. Enterprise-D (6 / 3).",
@@ -122,6 +127,42 @@ describe("fleet core", () => {
     const importedOverBudgetFleet = equipUpgrade(fleet, "enterprise", exocomp.id);
     expect(validateFleet(importedOverBudgetFleet, tightBudgetIndex).map((issue) => issue.code))
       .toContain("upgrade-sp-overflow");
+  });
+
+  it("counts captain SP toward a ship's upgrade allowance", () => {
+    const enterprise = cardByLegacyId(starter2017Ships, "S274");
+    const picard = cardByLegacyId(starter2017Captains, "Cap818");
+    const photonTorpedoes = cardByLegacyId(starter2017Upgrades, "W204");
+    const tightBudgetShip = { ...enterprise, upgradeSpLimit: 7 };
+    const tightBudgetIndex = {
+      ...index,
+      shipsById: new Map(index.shipsById).set(enterprise.id, tightBudgetShip),
+    };
+
+    let fleet = addShip(createEmptyFleet(), enterprise, "enterprise");
+    fleet = assignCaptain(fleet, "enterprise", picard.id);
+
+    expect(calculateUsedUpgradeSp(
+      tightBudgetShip,
+      fleet.ships[0],
+      tightBudgetIndex.upgradesById,
+      tightBudgetIndex.captainsById,
+    )).toBe(6);
+    expect(canEquipUpgrade(fleet, "enterprise", photonTorpedoes, tightBudgetIndex)).toEqual({
+      allowed: false,
+      reason: "Upgrade SP limit exceeded on U.S.S. Enterprise-D (8 / 7).",
+    });
+
+    const captainOnlyBudgetShip = { ...enterprise, upgradeSpLimit: 5 };
+    const captainOnlyBudgetIndex = {
+      ...index,
+      shipsById: new Map(index.shipsById).set(enterprise.id, captainOnlyBudgetShip),
+    };
+    const emptyFleet = addShip(createEmptyFleet(), enterprise, "captain-budget");
+    expect(canAssignCaptain(emptyFleet, "captain-budget", picard, captainOnlyBudgetIndex)).toEqual({
+      allowed: false,
+      reason: "Upgrade SP limit exceeded on U.S.S. Enterprise-D (6 / 5).",
+    });
   });
 
   it("calculates loadout costs, faction penalties, and variable weapon costs", () => {

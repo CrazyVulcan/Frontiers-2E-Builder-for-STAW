@@ -272,29 +272,57 @@ export function calculateUsedUpgradeSp(
   ship: ShipCard,
   entry: FleetShipV1,
   upgradesById: ReadonlyMap<string, UpgradeCard>,
+  captainsById: ReadonlyMap<string, CaptainCard>,
 ): number {
+  const captain = entry.captainId ? captainsById.get(entry.captainId) : undefined;
+  const captainSp = captain ? calculateCardCostForShip(ship, captain).total : 0;
+
   return entry.upgradeIds.reduce((total, upgradeId) => {
     const upgrade = upgradesById.get(upgradeId);
     return upgrade ? total + calculateCardCostForShip(ship, upgrade).total : total;
-  }, 0);
+  }, captainSp);
 }
 
 export function canAssignCaptain(
   fleet: FleetFileV1,
   shipInstanceId: string,
   captain: CaptainCard,
+  index: FleetCardIndex,
 ): EquipCheck {
-  if (!fleet.ships.some((entry) => entry.instanceId === shipInstanceId)) {
+  const entry = fleet.ships.find((candidate) => candidate.instanceId === shipInstanceId);
+  if (!entry) {
     return { allowed: false, reason: "Ship instance not found." };
   }
+
+  const ship = index.shipsById.get(entry.shipId);
+  if (!ship) return { allowed: false, reason: "Ship card not found." };
 
   const usedElsewhere = captain.unique && fleet.ships.some(
     (entry) => entry.instanceId !== shipInstanceId && entry.captainId === captain.id,
   );
 
-  return usedElsewhere
-    ? { allowed: false, reason: `${captain.name} is unique and is already assigned.` }
-    : { allowed: true };
+  if (usedElsewhere) {
+    return { allowed: false, reason: `${captain.name} is unique and is already assigned.` };
+  }
+
+  if (ship.upgradeSpLimit !== undefined) {
+    const projectedEntry = { ...entry, captainId: captain.id };
+    const projectedUpgradeSp = calculateUsedUpgradeSp(
+      ship,
+      projectedEntry,
+      index.upgradesById,
+      index.captainsById,
+    );
+
+    if (projectedUpgradeSp > ship.upgradeSpLimit) {
+      return {
+        allowed: false,
+        reason: `Upgrade SP limit exceeded on ${ship.name} (${projectedUpgradeSp} / ${ship.upgradeSpLimit}).`,
+      };
+    }
+  }
+
+  return { allowed: true };
 }
 
 export function canAddShip(fleet: FleetFileV1, ship: ShipCard): EquipCheck {
@@ -333,7 +361,12 @@ export function canEquipUpgrade(
   }
 
   if (ship.upgradeSpLimit !== undefined) {
-    const projectedUpgradeSp = calculateUsedUpgradeSp(ship, entry, index.upgradesById)
+    const projectedUpgradeSp = calculateUsedUpgradeSp(
+      ship,
+      entry,
+      index.upgradesById,
+      index.captainsById,
+    )
       + calculateCardCostForShip(ship, upgrade).total;
 
     if (projectedUpgradeSp > ship.upgradeSpLimit) {
@@ -388,7 +421,7 @@ export function placeCardInFleet(
   }
 
   if (card.type === "captain") {
-    const check = canAssignCaptain(fleet, target.shipInstanceId, card);
+    const check = canAssignCaptain(fleet, target.shipInstanceId, card, index);
     if (!check.allowed) {
       return { fleet, placed: false, message: check.reason ?? "That captain cannot be assigned." };
     }
@@ -486,7 +519,12 @@ export function validateFleet(fleet: FleetFileV1, index: FleetCardIndex): FleetR
     }
 
     if (ship.upgradeSpLimit !== undefined) {
-      const upgradeSp = calculateUsedUpgradeSp(ship, entry, index.upgradesById);
+      const upgradeSp = calculateUsedUpgradeSp(
+        ship,
+        entry,
+        index.upgradesById,
+        index.captainsById,
+      );
       if (upgradeSp > ship.upgradeSpLimit) {
         issues.push({
           code: "upgrade-sp-overflow",
