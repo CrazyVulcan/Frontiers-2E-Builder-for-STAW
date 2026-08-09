@@ -114,7 +114,7 @@ function getQuickAction(
   if (!selectedShipId) return { enabled: false, label: "Select a ship" };
 
   if (card.type === "captain") {
-    const check = canAssignCaptain(fleet, selectedShipId, card);
+    const check = canAssignCaptain(fleet, selectedShipId, card, fleetCardIndex);
     return { enabled: check.allowed, label: check.allowed ? "Assign captain" : "Unavailable" };
   }
 
@@ -447,7 +447,12 @@ function FleetShipBay({
   const captain = entry.captainId ? fleetCardIndex.captainsById.get(entry.captainId) : undefined;
   const capacity = getUpgradeSlotCapacity(ship, captain);
   const used = getUsedUpgradeSlots(entry, fleetCardIndex.upgradesById);
-  const usedUpgradeSp = calculateUsedUpgradeSp(ship, entry, fleetCardIndex.upgradesById);
+  const usedUpgradeSp = calculateUsedUpgradeSp(
+    ship,
+    entry,
+    fleetCardIndex.upgradesById,
+    fleetCardIndex.captainsById,
+  );
   const cost = calculateFleetCostBreakdown(
     { formatVersion: 1, name: fleet.name, ships: [entry] },
     fleetCardIndex,
