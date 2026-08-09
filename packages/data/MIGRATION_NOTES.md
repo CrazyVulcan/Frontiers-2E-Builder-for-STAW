@@ -63,3 +63,15 @@ The remaining seven ship records deliberately leave `upgradeSpLimit` and
 Sensor Echo is not retained as a printed action. In 2E, a ship with Cloak may use Sensor Echo
 while it has an active Cloak token; this gameplay condition is not duplicated on the builder's
 action bar. Additional 2E actions remain unresolved pending supplied icon references.
+
+## Rules-text icon tokens
+
+Rules copy may use bracketed semantic tokens such as `[time]`, `[hit]`, `[crit]`,
+`[battlestations]`, or `[crew]`. Canonical data keeps those readable tokens; the web renderer maps
+the controlled vocabulary to the supplied STAW 2E font. Unknown tokens remain visible as text so a
+misspelling or future symbol cannot silently disappear.
+
+The exact rules copy added in version 0.10.0 was supplied in
+`STAW-2E-Content-2017-Starter-Populated.xlsx`. Records marked as legacy seeds in that workbook
+remain subject to 2E review; token rendering does not promote their rules or costs to confirmed 2E
+values.

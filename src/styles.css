@@ -6,6 +6,20 @@
   font-display: swap;
 }
 
+.rulesGlyph {
+  display: inline-block;
+  min-width: .9em;
+  margin: 0 .06em;
+  color: currentColor;
+  font-family: "STAW 2E", sans-serif;
+  font-size: 1.25em;
+  font-style: normal;
+  font-weight: 400;
+  line-height: .75;
+  text-align: center;
+  vertical-align: -.12em;
+}
+
 :root {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
   color: #f5efe7;

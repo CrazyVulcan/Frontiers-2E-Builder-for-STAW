@@ -36,6 +36,7 @@ export interface BaseCard {
   unique: boolean;
   uniquenessRestrictions?: UniquenessRestriction[];
   image?: string;
+  /** Rules copy may contain semantic icon tokens such as `[time]` or `[hit]`. */
   rulesSummary?: string;
 
   /**

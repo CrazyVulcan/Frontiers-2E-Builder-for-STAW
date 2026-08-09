@@ -43,6 +43,7 @@ import {
   GameIcon,
   type GameIconName,
 } from "./GameIcon";
+import { RulesText } from "./RulesText";
 
 const CARD_DRAG_TYPE = "application/x-frontiers-card";
 const typeFilters: CatalogTypeFilter[] = [
@@ -207,7 +208,7 @@ function UpgradeCardFace({
 
         <div className="upgradeRulesPanel">
           <strong>{card.type === "captain" || card.type === "admiral" ? "COMMAND ABILITY" : titleCase(card.type)}</strong>
-          <p>{rulesText}</p>
+          <p><RulesText text={rulesText} /></p>
         </div>
 
         <div className="upgradeTypeSeal" aria-label={titleCase(card.type)}>
@@ -278,7 +279,7 @@ function ShipCardFace({
 
         <div className="shipRulesPanel">
           {rulesHeading && <strong>{rulesHeading}</strong>}
-          <p>{rulesBody}</p>
+          <p><RulesText text={rulesBody} /></p>
         </div>
 
         <div className="shipActionRail" aria-label="Ship actions">

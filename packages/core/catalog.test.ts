@@ -51,6 +51,19 @@ describe("2017 Starter catalog fixture", () => {
     expect(cloakingShips.every((ship) => ship.actions.length === 3)).toBe(true);
   });
 
+  it("retains the populated workbook's readable icon tokens in canonical rules text", () => {
+    const nonShipCards = [
+      ...starter2017Captains,
+      ...starter2017Admirals,
+      ...starter2017Upgrades,
+    ];
+    const picard = starter2017Captains.find((card) => card.legacyId === "Cap818")!;
+
+    expect(nonShipCards.every((card) => Boolean(card.rulesSummary))).toBe(true);
+    expect(picard.rulesSummary).toContain("[time]");
+    expect(picard.rulesSummary).toContain("[battlestations]");
+  });
+
   it("filters by faction and type without UI logic", () => {
     const klingonShips = filterCatalog(starter2017Cards, {
       query: "",
