@@ -54,6 +54,9 @@ The U.S.S. Enterprise-D (`S274`) values below come from the supplied 2E card moc
 the legacy 2017 database: 25 SP ship cost, 28 SP upgrade limit, Auxiliary Reserve 2, and a
 4 / 2 / 6 / 3 stat line. Its rules summary is transcribed from that mockup.
 
+The Galaxy, Nebula, Vor'cha, and K'Vort class silhouettes and the Auxiliary Reserve icon are
+presentation assets supplied for the 2E card layout; they do not add or infer rules values.
+
 The remaining seven ship records deliberately leave `upgradeSpLimit` and
 `auxiliaryPowerReserve` unresolved until their 2E cards are supplied.
 

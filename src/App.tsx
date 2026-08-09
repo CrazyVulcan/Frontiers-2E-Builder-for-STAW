@@ -256,10 +256,15 @@ function ShipCardFace({
         <div className="shipFactionSeal" aria-label={titleCase(faction)}>
           <GameIcon name={factionIconName(faction)} />
         </div>
-        <div className="shipNameBand">
-          <h3>{card.name}</h3>
+        <div className="shipNameRail">
+          <div className="shipNameBand"><h3>{card.name}</h3></div>
         </div>
-        <div className="shipClassBand"><span>{card.className}</span></div>
+        <div className="shipClassBand">
+          <span className="shipClassName">{card.className}</span>
+          <span className="shipClassIcon" aria-label={`${card.className} silhouette`}>
+            {card.classIcon && <img src={card.classIcon} alt="" draggable={false} />}
+          </span>
+        </div>
 
         <div className="shipStatRail" aria-label="Ship statistics">
           <span className="statAttack" aria-label={`Attack ${card.attack}`}><GameIcon name="stat-attack" /><b>{card.attack}</b></span>
@@ -267,7 +272,7 @@ function ShipCardFace({
           <span className="statHull" aria-label={`Hull ${card.hull}`}><GameIcon name="stat-hull" /><b>{card.hull}</b></span>
           <span className="statShield" aria-label={`Shields ${card.shields}`}><GameIcon name="stat-shield" /><b>{card.shields}</b></span>
           <span className="statAuxiliary" aria-label={`Auxiliary Reserve ${card.auxiliaryPowerReserve ?? "not supplied"}`}>
-            <small>AUX</small><b>{card.auxiliaryPowerReserve ?? "—"}</b>
+            <GameIcon name="stat-auxiliary-reserve" /><b>{card.auxiliaryPowerReserve ?? "—"}</b>
           </span>
         </div>
 

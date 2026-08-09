@@ -50,6 +50,8 @@ export interface BaseCard {
 export interface ShipCard extends BaseCard {
   type: "ship";
   className: string;
+  /** Presentation asset for the ship-class silhouette printed beside the class name. */
+  classIcon?: string;
   attack: number;
   agility: number;
   hull: number;
