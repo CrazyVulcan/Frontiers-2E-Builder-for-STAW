@@ -25,6 +25,32 @@ describe("2017 Starter catalog fixture", () => {
     expect([...factions].sort()).toEqual(["federation", "klingon"]);
   });
 
+  it("records supplied 2E ship values without inventing values for other ships", () => {
+    const enterprise = starter2017Ships.find((card) => card.legacyId === "S274")!;
+
+    expect(enterprise).toMatchObject({
+      cost: 25,
+      attack: 4,
+      agility: 2,
+      hull: 6,
+      shields: 3,
+      upgradeSpLimit: 28,
+      auxiliaryPowerReserve: 2,
+      upgradeSlots: ["tech", "weapon", "crew", "crew", "crew"],
+    });
+    expect(starter2017Ships
+      .filter((ship) => ship.legacyId !== "S274")
+      .every((ship) => ship.upgradeSpLimit === undefined && ship.auxiliaryPowerReserve === undefined))
+      .toBe(true);
+  });
+
+  it("prints Cloak without a separate Sensor Echo action", () => {
+    const cloakingShips = starter2017Ships.filter((ship) => ship.actions.includes("cloak"));
+
+    expect(cloakingShips).toHaveLength(4);
+    expect(cloakingShips.every((ship) => ship.actions.length === 3)).toBe(true);
+  });
+
   it("filters by faction and type without UI logic", () => {
     const klingonShips = filterCatalog(starter2017Cards, {
       query: "",

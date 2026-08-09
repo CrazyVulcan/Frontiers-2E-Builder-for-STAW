@@ -1,6 +1,6 @@
 {
   "project": "Frontiers - 2E Builder for STAW",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "fixture": {
     "name": "2017 Starter Set",
     "legacySetId": "2017core",

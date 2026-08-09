@@ -12,6 +12,7 @@ import {
   assignCaptain,
   calculateCardCostForShip,
   calculateFleetCostBreakdown,
+  calculateUsedUpgradeSp,
   canAddShip,
   canAssignCaptain,
   canEquipUpgrade,
@@ -98,39 +99,6 @@ function CardArt({ card }: { card: GameCard }) {
   );
 }
 
-function LibraryStats({ card }: { card: GameCard }) {
-  if (card.type === "ship") {
-    return (
-      <div className="libraryStats" aria-label="Ship statistics">
-        <span className="statAttack" aria-label={`Attack ${card.attack}`}><GameIcon name="stat-attack" /><b>{card.attack}</b></span>
-        <span className="statAgility" aria-label={`Agility ${card.agility}`}><GameIcon name="stat-agility" /><b>{card.agility}</b></span>
-        <span className="statHull" aria-label={`Hull ${card.hull}`}><GameIcon name="stat-hull" /><b>{card.hull}</b></span>
-        <span className="statShield" aria-label={`Shields ${card.shields}`}><GameIcon name="stat-shield" /><b>{card.shields}</b></span>
-      </div>
-    );
-  }
-
-  if (card.type === "captain" || card.type === "admiral") {
-    return (
-      <div className="libraryStats compactStats">
-        <span className="statCommand" aria-label={`Skill ${card.skill}`}><GameIcon name={card.type === "captain" ? "card-captain" : "card-admiral"} /><b>{card.skill}</b></span>
-        <span aria-label={`${card.talentSlots} talent slots`}><GameIcon name="upgrade-talent" /><b>{card.talentSlots}</b></span>
-      </div>
-    );
-  }
-
-  if (card.type === "weapon" && card.attack) {
-    return (
-      <div className="libraryStats compactStats">
-        <span className="statAttack" aria-label={`Attack ${card.attack}`}><GameIcon name="stat-attack" /><b>{card.attack}</b></span>
-        {card.range && <span aria-label={`Range ${card.range}`}><GameIcon name="range" /><b>{card.range}</b></span>}
-      </div>
-    );
-  }
-
-  return null;
-}
-
 function getQuickAction(
   card: GameCard,
   fleet: FleetFileV1,
@@ -152,7 +120,9 @@ function getQuickAction(
   const check = canEquipUpgrade(fleet, selectedShipId, card, fleetCardIndex);
   const blockedLabel = check.reason?.includes("already equipped")
     ? "Already equipped"
-    : "No open slot";
+    : check.reason?.includes("SP limit")
+      ? "Over SP limit"
+      : "No open slot";
   return { enabled: check.allowed, label: check.allowed ? "Equip card" : blockedLabel };
 }
 
@@ -271,45 +241,61 @@ function ShipCardFace({
   variant?: "library" | "fleet";
 }) {
   const faction = card.factions[0];
+  const rulesText = card.rulesSummary ?? `${card.generic ? "Generic" : "Unique"} ${card.className} ship card.`;
+  const rulesSeparator = rulesText.indexOf(":");
+  const rulesHeading = rulesSeparator > -1 ? rulesText.slice(0, rulesSeparator + 1) : undefined;
+  const rulesBody = rulesSeparator > -1 ? rulesText.slice(rulesSeparator + 1).trim() : rulesText;
 
   return (
     <div className={`shipCardFace shipCardFace-${variant} faction-${faction}`} data-legacy-id={card.legacyId}>
-      <div className="libraryCardArt"><CardArt card={card} /></div>
-      <div className="libraryCardBody">
-        <div className="factionSeal" aria-label={titleCase(faction)}>
+      <div className="shipCardArt"><CardArt card={card} /></div>
+      <div className="shipCardFrame">
+        <div className={`shipUniqueSeal ${card.unique ? "" : "empty"}`} aria-label={card.unique ? "Fleet Unique" : undefined}>
+          {card.unique && <GameIcon name="unique" />}
+        </div>
+        <div className="shipFactionSeal" aria-label={titleCase(faction)}>
           <GameIcon name={factionIconName(faction)} />
         </div>
-        <div className="libraryCardHeading">
+        <div className="shipNameBand">
           <h3>{card.name}</h3>
-          <small>{card.className}</small>
-          {card.unique && <GameIcon name="unique" className="uniqueBadge" label="Unique" />}
         </div>
-        <div className="spBadge">
-          <strong>{displayCost}</strong>
-          <span>SP</span>
+        <div className="shipClassBand"><span>{card.className}</span></div>
+
+        <div className="shipStatRail" aria-label="Ship statistics">
+          <span className="statAttack" aria-label={`Attack ${card.attack}`}><GameIcon name="stat-attack" /><b>{card.attack}</b></span>
+          <span className="statAgility" aria-label={`Agility ${card.agility}`}><GameIcon name="stat-agility" /><b>{card.agility}</b></span>
+          <span className="statHull" aria-label={`Hull ${card.hull}`}><GameIcon name="stat-hull" /><b>{card.hull}</b></span>
+          <span className="statShield" aria-label={`Shields ${card.shields}`}><GameIcon name="stat-shield" /><b>{card.shields}</b></span>
+          <span className="statAuxiliary" aria-label={`Auxiliary Reserve ${card.auxiliaryPowerReserve ?? "not supplied"}`}>
+            <small>AUX</small><b>{card.auxiliaryPowerReserve ?? "—"}</b>
+          </span>
         </div>
 
-        <LibraryStats card={card} />
-
-        <div className="cardRulesPanel">
-          {card.rulesSummary ?? `${card.generic ? "Generic" : "Unique"} ${card.className} ship card.`}
+        <div className="shipRulesPanel">
+          {rulesHeading && <strong>{rulesHeading}</strong>}
+          <p>{rulesBody}</p>
         </div>
 
-        <div className="cardIconRails">
-          <div className="cardActionRail" aria-label="Ship actions">
-            {card.actions.map((action) => {
-              const iconName = actionIconName(action);
-              return iconName
-                ? <GameIcon key={action} name={iconName} label={titleCase(action)} />
-                : <span key={action}>{action.split("-").map((part) => part[0]).join("").toUpperCase()}</span>;
-            })}
+        <div className="shipActionRail" aria-label="Ship actions">
+          {card.actions.map((action) => {
+            const iconName = actionIconName(action);
+            return iconName
+              ? <GameIcon key={action} name={iconName} label={titleCase(action)} />
+              : <span key={action}>{action.split("-").map((part) => part[0]).join("").toUpperCase()}</span>;
+          })}
+        </div>
+
+        <div className="shipUpgradeBar">
+          <div className="shipUpgradeLimit" aria-label={`Upgrade SP limit ${card.upgradeSpLimit ?? "not supplied"}`}>
+            <strong>{card.upgradeSpLimit ?? "—"}</strong>
           </div>
-          <div className="cardSlotRail" aria-label="Upgrade slots">
+          <div className="shipUpgradeSlots" aria-label="Upgrade slots">
             {card.upgradeSlots.map((slot, slotIndex) => (
-              <span key={`${slot}-${slotIndex}`}>
-                {slot === "talent" ? <GameIcon name="upgrade-talent" label="Talent" /> : slot.slice(0, 1).toUpperCase()}
-              </span>
+              <GameIcon key={`${slot}-${slotIndex}`} name={upgradeTypeIcons[slot]} label={titleCase(slot)} />
             ))}
+          </div>
+          <div className="shipPrintedCost" aria-label={`Ship cost ${displayCost} SP`}>
+            <strong>{displayCost}</strong>
           </div>
         </div>
       </div>
@@ -455,6 +441,7 @@ function FleetShipBay({
   const captain = entry.captainId ? fleetCardIndex.captainsById.get(entry.captainId) : undefined;
   const capacity = getUpgradeSlotCapacity(ship, captain);
   const used = getUsedUpgradeSlots(entry, fleetCardIndex.upgradesById);
+  const usedUpgradeSp = calculateUsedUpgradeSp(ship, entry, fleetCardIndex.upgradesById);
   const cost = calculateFleetCostBreakdown(
     { formatVersion: 1, name: fleet.name, ships: [entry] },
     fleetCardIndex,
@@ -513,6 +500,10 @@ function FleetShipBay({
         <div className="manifestIntro">
           <span>{selected ? "ACTIVE SHIP" : "EQUIPMENT MANIFEST"}</span>
           <small>{selected ? "Library cards equip here" : "Select this group or drop a card anywhere inside"}</small>
+          <div className="upgradeSpStatus" aria-label={`Upgrade SP ${usedUpgradeSp} of ${ship.upgradeSpLimit ?? "not supplied"}`}>
+            <span>UPGRADE SP</span>
+            <strong>{usedUpgradeSp} / {ship.upgradeSpLimit ?? "—"}</strong>
+          </div>
         </div>
         <div className="slotStatusRail">
           <SlotStatus icon="card-captain" label="Captain" used={captain ? 1 : 0} capacity={1} />

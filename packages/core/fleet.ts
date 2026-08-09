@@ -35,7 +35,8 @@ export type FleetRuleIssueCode =
   | "missing-captain"
   | "missing-upgrade"
   | "unique-card-repeated"
-  | "upgrade-slot-overflow";
+  | "upgrade-slot-overflow"
+  | "upgrade-sp-overflow";
 
 export interface FleetRuleIssue {
   code: FleetRuleIssueCode;
@@ -267,6 +268,17 @@ export function getUsedUpgradeSlots(
   return used;
 }
 
+export function calculateUsedUpgradeSp(
+  ship: ShipCard,
+  entry: FleetShipV1,
+  upgradesById: ReadonlyMap<string, UpgradeCard>,
+): number {
+  return entry.upgradeIds.reduce((total, upgradeId) => {
+    const upgrade = upgradesById.get(upgradeId);
+    return upgrade ? total + calculateCardCostForShip(ship, upgrade).total : total;
+  }, 0);
+}
+
 export function canAssignCaptain(
   fleet: FleetFileV1,
   shipInstanceId: string,
@@ -316,9 +328,23 @@ export function canEquipUpgrade(
   const capacity = getUpgradeSlotCapacity(ship, captain);
   const used = getUsedUpgradeSlots(entry, index.upgradesById);
 
-  return used[upgrade.type] < capacity[upgrade.type]
-    ? { allowed: true }
-    : { allowed: false, reason: `No open ${upgrade.type} slot on ${ship.name}.` };
+  if (used[upgrade.type] >= capacity[upgrade.type]) {
+    return { allowed: false, reason: `No open ${upgrade.type} slot on ${ship.name}.` };
+  }
+
+  if (ship.upgradeSpLimit !== undefined) {
+    const projectedUpgradeSp = calculateUsedUpgradeSp(ship, entry, index.upgradesById)
+      + calculateCardCostForShip(ship, upgrade).total;
+
+    if (projectedUpgradeSp > ship.upgradeSpLimit) {
+      return {
+        allowed: false,
+        reason: `Upgrade SP limit exceeded on ${ship.name} (${projectedUpgradeSp} / ${ship.upgradeSpLimit}).`,
+      };
+    }
+  }
+
+  return { allowed: true };
 }
 
 export function placeCardInFleet(
@@ -454,6 +480,17 @@ export function validateFleet(fleet: FleetFileV1, index: FleetCardIndex): FleetR
         issues.push({
           code: "upgrade-slot-overflow",
           message: `${ship.name} uses ${used[type]} ${type} upgrades but has ${capacity[type]} slots.`,
+          shipInstanceId: entry.instanceId,
+        });
+      }
+    }
+
+    if (ship.upgradeSpLimit !== undefined) {
+      const upgradeSp = calculateUsedUpgradeSp(ship, entry, index.upgradesById);
+      if (upgradeSp > ship.upgradeSpLimit) {
+        issues.push({
+          code: "upgrade-sp-overflow",
+          message: `${ship.name} uses ${upgradeSp} upgrade SP but has a limit of ${ship.upgradeSpLimit}.`,
           shipInstanceId: entry.instanceId,
         });
       }
